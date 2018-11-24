@@ -1,0 +1,70 @@
+<form [formGroup]="registerForm" novalidate (ngSubmit)="onSubmit()" class="container"
+      fxLayout.xs="column"
+      fxFlex.lt-md ="100%"
+      fxFlex.gt-md ="40%">
+  <mat-card class="shipping-card">
+    <mat-card-header>
+      <mat-card-title>Register</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput #username maxlength="15" type="text" placeholder="Username" formControlName="username">
+            <mat-hint align="end">{{username.value.length}} / 15</mat-hint>
+            <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+              Username is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Email" type="email" formControlName="email">
+            <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+              Email is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="" formGroupName="passwords">
+
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Password" type="password" formControlName="password">
+              <mat-error *ngIf="registerForm.get(['passwords','password']).hasError('required')">
+                Password is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Confirm password" type="password" formControlName="passwordConfirmation">
+              <mat-error *ngIf="registerForm.get(['passwords','passwordConfirmation']).hasError('required')">
+                Password confirmation is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+              <div *ngIf="registerForm.get(['passwords','password']).value != registerForm.get(['passwords','passwordConfirmation']).value && registerForm.get(['passwords','passwordConfirmation']).value != null">
+                <mat-error>
+                  Password does not match
+                </mat-error>
+              </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

@@ -1,0 +1,17 @@
+<div fxLayout="row" fxLayoutAlign.lt-md="center start">
+  <div class="m-2 jumbotron p-4 rounded"
+       fxLayout="column"
+       fxFlex.lt-md ="100%"
+       fxFlex.gt-md ="50%"
+       cdkDrag>
+    <h2 class="h1 h1-responsive border-bottom">Lost Arena</h2>
+    <p class="m-2">Bonjour</p>
+    <div *ngIf="!(authService.token$ | async)">
+      <a class="btn btn-primary btn-lg waves-light" role="button" mdbWavesEffect routerLink="login">Login</a>
+      <a class="btn btn-primary btn-lg waves-light" role="button" mdbWavesEffect routerLink="register">Register</a>
+    </div>
+    <div *ngIf="(authService.token$ | async)">
+      <a class="btn btn-primary btn-lg waves-light" role="button" mdbWavesEffect (click)="authService.logout()">Logout</a>
+    </div>
+  </div>
+</div>

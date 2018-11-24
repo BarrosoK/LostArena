@@ -1,0 +1,10 @@
+<button (click)="openDialog()">Create character</button>
+<div *ngIf="(characterService.selectedCharacter$ | async) as character">
+  Selected character: {{ character.name }}
+</div>
+<div>
+  <div *ngFor="let character of (characterService.characters$ | async); index as i">
+    {{ i + 1 }} | {{ character.name }} {{ character.level }} <button (click)="selectCharacter(character)">select</button>
+  </div>
+</div>
+

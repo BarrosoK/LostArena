@@ -1,0 +1,27 @@
+<div fxLayoutAlign="center center">
+<form [formGroup]="creationForm" novalidate (ngSubmit)="onSubmit()" ngClass.gt-md="mt-4"
+      fxFlex.lt-md ="100%"
+      >
+  <mat-card class="shipping-card">
+    <mat-card-header>
+      <mat-card-title>Create Character</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput #username maxlength="15" type="text" placeholder="Name" formControlName="name">
+            <mat-hint align="end">{{creationForm.controls['name'].value.length}} / 15</mat-hint>
+            <mat-error *ngIf="creationForm.controls['name'].hasError('required')">
+              Name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">Create</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+</div>
