@@ -2,11 +2,10 @@
 <form [formGroup]="creationForm" novalidate (ngSubmit)="onSubmit()" ngClass.gt-md="mt-4"
       fxFlex.lt-md ="100%"
       >
-  <mat-card class="shipping-card">
-    <mat-card-header>
-      <mat-card-title>Create Character</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
+    <div>
+       Character
+    </div>
+    <div>
       <div class="row">
         <div class="col">
           <mat-form-field class="full-width">
@@ -18,10 +17,9 @@
           </mat-form-field>
         </div>
       </div>
-    </mat-card-content>
-    <mat-card-actions>
+    </div>
+    <div>
       <button mat-raised-button color="primary" type="submit">Create</button>
-    </mat-card-actions>
-  </mat-card>
+    </div>
 </form>
 </div>

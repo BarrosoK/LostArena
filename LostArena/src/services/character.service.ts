@@ -28,12 +28,12 @@ export class CharacterService {
   }
 
   getMyCharacters(): Observable<Character[]> {
-    return this.httpClient.get<{ characters: Character[] }>(environment.api.characters, JWTInterceptor.createHeader()).pipe(
+    return this.httpClient.get<{ characters: Character[] }>(environment.api.character, JWTInterceptor.createHeader()).pipe(
       map(({characters}) => characters)
     );
   }
 
   createCharacter(characterInfo: Character) {
-    return this.httpClient.post(environment.api.characters, characterInfo, JWTInterceptor.createHeader());
+    return this.httpClient.post(environment.api.character, characterInfo, JWTInterceptor.createHeader());
   }
 }

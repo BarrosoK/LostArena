@@ -277,7 +277,7 @@
           "type": "string",
           "example": "Pedrito"
         },
-        "level": {
+        "levkel": {
           "type": "number",
           "example": 20
         },

@@ -34,6 +34,10 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CharactersComponent} from './characters/characters.component';
 import {CreationComponent} from './characters/creation/creation.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import {SocketState} from "./stores/states/socket.state";
+
+const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
 
 @NgModule({
   declarations: [
@@ -70,11 +74,13 @@ import {MatDialogModule} from '@angular/material/dialog';
     FormsModule,
     HttpClientModule,
     NgxsModule.forRoot([
-      UserState
+      UserState,
+      SocketState
     ]),
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
-    DragDropModule
+    DragDropModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

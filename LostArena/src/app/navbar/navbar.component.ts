@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav, MatSidenavModule} from '@angular/material';
 import {AuthService} from "../../services/auth.service";
+import {SocketService} from "../../services/socket.service";
 
 @Component({
   selector: 'app-navbar',
@@ -43,7 +44,8 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  constructor(private breakpointObserver: BreakpointObserver, protected authService: AuthService) {
+  constructor(private breakpointObserver: BreakpointObserver, protected authService: AuthService,
+              protected socket: SocketService) {
    }
 
 }

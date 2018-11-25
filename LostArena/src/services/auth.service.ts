@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {Select, Store} from '@ngxs/store';
@@ -10,7 +10,7 @@ import {MatSnackBar} from '@angular/material';
 import {JWTInterceptor} from "../interceptors/jwtInterceptor";
 import {CharacterService} from "./character.service";
 import {Character} from "../app/models/character";
-import {SetCharacters} from "../app/stores/actions/character.actions";
+import {SelectCharacter, SetCharacters} from "../app/stores/actions/character.actions";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class AuthService {
 
   register(account) {
     account.password = account.passwords.password;
-    this.http.post( environment.api.register, account, JWTInterceptor.createHeader()).subscribe((res) => {
+    this.http.post(environment.api.register, account, JWTInterceptor.createHeader()).subscribe((res) => {
       console.log(res);
       if (res && res['success']) {
         this.openSnackBar('Account created ! ', 'Login', 4000);
@@ -51,6 +51,7 @@ export class AuthService {
       if (res['success']) {
         localStorage.setItem('token', res['token']);
         this.store.dispatch(new SetSession(res['token'], res['user']));
+        this.recoverSelected();
         this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
           this.store.dispatch(new SetCharacters(characters));
         });
@@ -61,8 +62,21 @@ export class AuthService {
     });
   }
 
+  recoverSelected() {
+    const id = localStorage.getItem('selected');
+    const characters = this.store.selectOnce(state => state.user).subscribe((c) => {
+      const char = c.characters.filter((chars) => {
+        return chars._id === id;
+      });
+      if (char.length > 0 && char[0].user_id === c.user.id) {
+        this.store.dispatch(new SelectCharacter(char[0]));
+      }
+    });
+  }
+
   logout() {
-    localStorage.getItem('token'); {
+    localStorage.getItem('token');
+    {
       localStorage.removeItem('token');
       this.router.navigate(['login']);
       this.store.dispatch(new SetSession(null, null));
@@ -82,6 +96,7 @@ export class AuthService {
       });
       this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
         this.store.dispatch(new SetCharacters(characters));
+        this.recoverSelected();
       });
     }
   }

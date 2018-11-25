@@ -5,8 +5,12 @@ const passport      = require('passport');
 const pe            = require('parse-error');
 const cors          = require('cors');
 const v1 = require('./routes/v1');
+var socket = require('./socket/socket');
+
 
 const app = express();
+const server = require('http').Server(app);
+socket.bind(server);
 
 const CONFIG = require('./config/config');
 app.use(logger('dev'));

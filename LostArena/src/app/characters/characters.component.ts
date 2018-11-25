@@ -25,7 +25,6 @@ export class CharactersComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CreationComponent, {
-      data: {}
     });
 
     dialogRef.afterClosed().subscribe(result => {

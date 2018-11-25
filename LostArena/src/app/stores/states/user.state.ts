@@ -47,6 +47,7 @@ export class UserState {
   @Action(SelectCharacter)
   selectCharacter({getState, patchState}: StateContext<UserStateModel>, {character}: SelectCharacter) {
     const state = getState();
+    localStorage.setItem('selected', character._id);
     patchState({
       selectedCharacter: character
     });

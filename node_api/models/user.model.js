@@ -79,8 +79,7 @@ UserSchema.methods.Characters = async function() {
 };
 
 UserSchema.methods.getJWT = function(){
-    let expiration_time = parseInt(CONFIG.jwt_expiration);
-    return "Bearer "+jwt.sign({user_id:this._id}, CONFIG.jwt_encryption, {expiresIn: expiration_time});
+    return "Bearer "+jwt.sign({user_id:this._id}, CONFIG.jwt_encryption, {expiresIn: CONFIG.jwt_expiration});
 };
 
 UserSchema.methods.toWeb = function(){

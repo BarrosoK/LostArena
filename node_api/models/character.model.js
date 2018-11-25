@@ -8,7 +8,7 @@ let CharacterSchema = mongoose.Schema({
     sta: Number,
     con: Number,
     dex: Number,
-    str: Number
+    str: Number,
 },  {toJSON: {virtuals: true}});
 
 CharacterSchema.methods.toWeb = function(){
