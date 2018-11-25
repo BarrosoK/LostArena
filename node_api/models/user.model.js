@@ -2,7 +2,6 @@ const mongoose 			= require('mongoose');
 const bcrypt 			= require('bcrypt');
 const bcrypt_p 			= require('bcrypt-promise');
 const jwt           	= require('jsonwebtoken');
-const Company           = require('./company.model');
 const Character         = require('./character.model');
 const validate          = require('mongoose-validator');
 const {TE, to}          = require('../services/util.service');
@@ -23,7 +22,7 @@ UserSchema.virtual('characters', {
     ref: 'Character',
     localField: '_id',
     foreignField: 'user_id',
-})
+});
 
 UserSchema.post('save', function(doc, next) {
     doc.populate('characters').execPopulate().then(function() {
@@ -31,9 +30,15 @@ UserSchema.post('save', function(doc, next) {
     });
   });
 
-  UserSchema.pre('findOne', function() {
+UserSchema.pre('findOne', function() {
+    this.populate({
+        path: 'characters',
+    });
+});
+
+UserSchema.pre('findById', function() {
     this.populate('characters');
-  });
+});
 
 UserSchema.pre('save', async function(next){
 
@@ -51,7 +56,7 @@ UserSchema.pre('save', async function(next){
     } else{
         return next();
     }
-})
+});
 
 UserSchema.methods.comparePassword = async function(pw){
     let err, pass;
@@ -71,21 +76,7 @@ UserSchema.methods.Characters = async function() {
     [err, charactes] = await to (Character.find({'users.user': this._id}));
     if (err) TE('err getting characters');
     return characters;
-}
-
-UserSchema.methods.Companies = async function(){
-    let err, companies;
-    [err, companies] = await to(Company.find({'users.user':this._id}));
-    if(err) TE('err getting companies');
-    return companies;
 };
-
-UserSchema.virtual('full_name').get(function () { //now you can treat as if this was a property instead of a function
-    if(!this.first) return null;
-    if(!this.last) return this.first;
-
-    return this.first + ' ' + this.last;
-});
 
 UserSchema.methods.getJWT = function(){
     let expiration_time = parseInt(CONFIG.jwt_expiration);
@@ -94,7 +85,6 @@ UserSchema.methods.getJWT = function(){
 
 UserSchema.methods.toWeb = function(){
     let json = this.toJSON();
-    json.id = this._id;
     return json;
 };
 

@@ -31,7 +31,7 @@ module.exports.ReS = function(res, data, code){ // Success Web Response
     return res.json(send_data)
 };
 
-module.exports.TE = TE = function(err_message, log){ // TE stands for Throw Error
+module.exports.TE = TE = function(err_message, log = true){ // TE stands for Throw Error
     if(log === true){
         console.error(err_message);
     }

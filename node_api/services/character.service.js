@@ -27,9 +27,17 @@ const createCharacter = async function(characterInfo, user){
     if (!unique_key) TE('An name was not entetred.');
 
     auth_info.method = 'name';
+
+    characterInfo.user_id = user._id;
+
+    // GENERAL
     characterInfo.name = unique_key;
     characterInfo.level = 1;
-    characterInfo.user_id = user._id;
+    // STATS
+    characterInfo.sta = 5;
+    characterInfo.dex = 5;
+    characterInfo.str = 5;
+    characterInfo.con = 5;
 
     [err, character] = await to(Character.create(characterInfo));
     if(err) {

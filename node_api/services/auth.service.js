@@ -67,7 +67,6 @@ const authUser = async function(userInfo){//returns token
     [err, user] = await to(User.findOne({username:unique_key }));
     if(err) TE(err.message);
 
-
     if(!user) TE('Not registered');
 
     [err, user] = await to(user.comparePassword(userInfo.password));
@@ -75,6 +74,5 @@ const authUser = async function(userInfo){//returns token
     if(err) TE(err.message);
 
     return user;
-
-}
+};
 module.exports.authUser = authUser;
