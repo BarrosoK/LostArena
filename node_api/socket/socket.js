@@ -9,22 +9,20 @@ module.exports = {
         server.listen(3002, function(){
             console.log('listening on *:3002');
         });
-
         io.on('connection', function(socket){
             module.exports.onConnect(socket);
-            socket.on('disconnect', () => {
-                module.exports.onDisconnect();
-            });
+            socket.on('disconnect', () => module.exports.onDisconnect() );
         });
-
     },
     onConnect : (socket) =>{
+        socket.sendSystemMessage('Welcome 1');
+        socket.sendSystemMessage('Welcome 2');
+        socket.sendSystemMessage('Welcome 3');
         io.emitClientConnected(socket);
     },
     onDisconnect: () => {
         io.emitClientConnected(null);
     }
-
 };
 
 Io.prototype.emitSystemMessage = function(msg) {

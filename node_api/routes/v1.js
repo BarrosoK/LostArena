@@ -31,5 +31,6 @@ router.post(    '/users/login',     UserController.login);
 //********* API DOCUMENTATION **********
 router.use('/docs/api.json',            express.static(path.join(__dirname, '/../public/v1/documentation/api.json')));
 router.use('/docs',                     express.static(path.join(__dirname, '/../public/v1/documentation/dist')));
+
 module.exports = router;
 

@@ -2,7 +2,7 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const apiBase = 'http://localhost:3000/';
+export const apiBase = 'http://92.92.192.178:3000/';
 export const apiVersion = 'v1/';
 
 export const environment = {

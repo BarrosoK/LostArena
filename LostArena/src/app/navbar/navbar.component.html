@@ -1,40 +1,97 @@
 <mat-sidenav-container class="sidenav-container">
+
+
   <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
                [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
                [mode]="(isHandset$ | async) ? 'over' : 'side'">
-    <mat-toolbar>LostArena</mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="" (click)="onNavClick()" routerLinkActive="active">Home</a>
-      <div *ngIf="!(authService.token$ | async)">
-        <!-- NOT LOGGED-->
-        <a mat-list-item routerLink="login" (click)="onNavClick()" routerLinkActive="active">Login</a>
-        <a mat-list-item routerLink="register" (click)="onNavClick()" routerLinkActive="active">Register</a>
+    <div>
+
+    </div>
+
+    <mat-nav-list fxLayout="column" fxFlexFill fxLayoutAlign="space-between start">
+
+      <div>
+        <mat-toolbar>LostArena</mat-toolbar>
+        <a mat-list-item routerLink="" (click)="onNavClick()" routerLinkActive="active">Home</a>
+        <div *ngIf="!(authService.token$ | async)">
+          <!-- NOT LOGGED-->
+          <a mat-list-item routerLink="login" (click)="onNavClick()" routerLinkActive="active">Login</a>
+          <a mat-list-item routerLink="register" (click)="onNavClick()" routerLinkActive="active">Register</a>
+        </div>
+        <div *ngIf="(authService.token$ | async)">
+          <!-- LOGGED -->
+          <a mat-list-item routerLink="characters" routerLinkActive="active">Characters</a>
+          <a mat-list-item routerLink="login" (click)="authService.logout()" routerLinkActive="active">Logout</a>
+        </div>
       </div>
-      <div *ngIf="(authService.token$ | async)">
-        <!-- LOGGED -->
-        <a mat-list-item routerLink="characters" routerLinkActive="active">Characters</a>
-        <a mat-list-item routerLink="login" (click)="authService.logout()" routerLinkActive="active">Logout</a>
+
+      <div class="m-2">
+        Clients connected: {{socket.clients$ | async}}
       </div>
+
     </mat-nav-list>
+
+
   </mat-sidenav>
+
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
       <button
         type="button"
         aria-label="sidenav"
         mat-icon-button
         (click)="drawer.toggle()"
         *ngIf="true">
+
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Lost Arena</span>
+      <div *ngIf="(session$ | async) as session" fxLayout="row" fxLayoutGap="10px">
+
+
+        <div class="btn-group" mdbDropdown>
+          <button  mdbDropdownToggle type="button" mdbBtn color="deep-purple" class="waves-light" ngClass.lt-md=""
+                  mdbWavesEffect>
+            <mat-icon aria-label="" [matBadge]="(socket.messagesSystem$ | async).length"  [matBadgeHidden]="(socket.messagesSystem$ | async).length === 0" matBadgeColor="accent" matBadgeSize="medium" matBadgePosition="below after">announcement</mat-icon>
+          </button>
+
+
+          <div class="dropdown-menu dropdown-primary">
+            <mat-nav-list>
+              <mat-list-item *ngFor="let msg of (socket.messagesSystem$ | async | slice:0:5) ; index as i">
+                <a matLine>{{ msg }}</a>
+                <button mat-icon-button (click)="remove(i)">
+                  <mat-icon>remove_circle</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-nav-list>
+          </div>
+
+
+        </div>
+
+
+        <div class="btn-group" mdbDropdown fxShow.lt-md="false">
+          <button mdbDropdownToggle type="button" mdbBtn color="deep-purple" class="dropdown-toggle waves-light"
+                  mdbWavesEffect>
+            {{session.username}}
+          </button>
+
+          <div class="dropdown-menu dropdown-primary">
+            <a class="dropdown-item" routerLink="characters">Characters</a>
+            <div class="divider dropdown-divider"></div>
+            <a class="dropdown-item">Settings</a>
+            <a class="dropdown-item" (click)="authService.logout()">Logout</a>
+          </div>
+        </div>
+
+
+      </div>
+
+
     </mat-toolbar>
     <router-outlet>
     </router-outlet>
-
-    <div>
-      Clients connected: {{socket.clients$ | async}}
-    </div>
 
 
   </mat-sidenav-content>

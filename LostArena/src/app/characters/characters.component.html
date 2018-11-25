@@ -1,10 +1,43 @@
-<button (click)="openDialog()">Create character</button>
+<div class="mat-display-1 border-bottom m-2 p-2">
+  My Characters
+</div>
+
+<div fxLayout="column" fxLayoutAlign="center center">
+
+<button mdbBtn type="button" color="primary" outline="true" mdbWavesEffect (click)="openDialog()">Create character</button>
 <div *ngIf="(characterService.selectedCharacter$ | async) as character">
-  Selected character: {{ character.name }}
+  <span class="mat-h4">Selected character: </span><span class="mat-body-strong">{{ character.name }}</span>
 </div>
-<div>
-  <div *ngFor="let character of (characterService.characters$ | async); index as i">
-    {{ i + 1 }} | {{ character.name }} {{ character.level }} <button (click)="selectCharacter(character)">select</button>
-  </div>
+
 </div>
+
+
+<mat-grid-list [cols]="(isMobile) ? 1 : 4"  rowHeight="1:1.4" gutterSize="1rem">
+  <mat-grid-tile *ngFor="let character of (characterService.characters$ | async); index as i">
+
+    <!-- Card -->
+    <mdb-card>
+      <div class="view rgba-white-slight waves-light" mdbWavesEffect>
+        <mdb-card-img src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg" alt="Card image cap"></mdb-card-img>
+        <a>
+          <div class="mask"></div>
+        </a>
+      </div>
+      <mdb-card-body>
+        <mdb-card-title>
+          <h4>{{ character.name }}</h4>
+        </mdb-card-title>
+        level: {{ character.level }}
+        STA: {{ character.sta }}
+        STR: {{ character.str }}
+        DEX: {{ character.dex }}
+        CON: {{ character.con }}
+      </mdb-card-body>
+      <mdb-card-footer>
+        <button mdbBtn color="primary" (click)="selectCharacter(character)" mdbWavesEffect>Select</button>
+      </mdb-card-footer>
+    </mdb-card>
+    <!-- Card -->
+  </mat-grid-tile>
+</mat-grid-list>
 

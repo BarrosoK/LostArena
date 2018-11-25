@@ -1,5 +1,5 @@
 import {Action, Select, Selector, State, StateContext} from '@ngxs/store';
-import {AddMessageSystem} from '../actions/socket.actions';
+import {AddMessageSystem, RemoveMessageSystem} from '../actions/socket.actions';
 
 export interface SocketStateModel {
   sysMessages: string[];
@@ -19,11 +19,22 @@ export class SocketState {
     return state.sysMessages;
   }
 
+  @Action(RemoveMessageSystem)
+  removeMessageSystem({getState, patchState}: StateContext<SocketStateModel>, {id}: RemoveMessageSystem) {
+    const state = getState();
+    patchState({
+      sysMessages: state.sysMessages.filter((msg, i) => {
+        return i !== +id;
+      })
+    });
+  }
+
   @Action(AddMessageSystem)
   addMessageSystem({getState, patchState}: StateContext<SocketStateModel>, {message}: AddMessageSystem) {
     const state = getState();
-    state.sysMessages.push(message);
-    return state;
+    patchState({
+      sysMessages: [message, ...state.sysMessages]
+    });
   }
 }
 

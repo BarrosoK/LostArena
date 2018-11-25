@@ -68,7 +68,7 @@ export class AuthService {
       const char = c.characters.filter((chars) => {
         return chars._id === id;
       });
-      if (char.length > 0 && char[0].user_id === c.user.id) {
+      if (c.user.id && char.length > 0 && char[0].user_id === c.user.id) {
         this.store.dispatch(new SelectCharacter(char[0]));
       }
     });

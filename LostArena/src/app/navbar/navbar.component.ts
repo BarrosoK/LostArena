@@ -1,10 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import {Observable, Subscribable} from 'rxjs';
 import { map } from 'rxjs/operators';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSidenav, MatSidenavModule} from '@angular/material';
 import {AuthService} from "../../services/auth.service";
 import {SocketService} from "../../services/socket.service";
+import {UserState, UserStateModel} from "../stores/states/user.state";
+import {Store} from "@ngxs/store";
+import {RemoveMessageSystem} from "../stores/actions/socket.actions";
+import {SocketState} from "../stores/states/socket.state";
 
 @Component({
   selector: 'app-navbar',
@@ -13,7 +17,8 @@ import {SocketService} from "../../services/socket.service";
 })
 export class NavbarComponent implements OnInit {
 
-  isMobile = false;
+  static isMobile = false;
+  session$;
 
   @ViewChild('drawer') sidenav: MatSidenav;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -27,15 +32,16 @@ export class NavbarComponent implements OnInit {
   }
 
   onNavClick() {
-    if (this.isMobile) {
+    if (NavbarComponent.isMobile) {
       this.sidenav.close();
     }
   }
 
 
   ngOnInit() {
+    this.session$ = this.store.select(UserState.user);
     this.isHandset$.subscribe((onMobile) => {
-      this.isMobile = onMobile;
+      NavbarComponent.isMobile = onMobile;
         if (!onMobile && !this.sidenav.opened) {
           this.sidenav.open();
         } else if (onMobile && this.sidenav.opened) {
@@ -44,8 +50,12 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  remove(index) {
+    this.store.dispatch(new RemoveMessageSystem(index));
+  }
+
   constructor(private breakpointObserver: BreakpointObserver, protected authService: AuthService,
-              protected socket: SocketService) {
+              protected socket: SocketService, private store: Store) {
    }
 
 }

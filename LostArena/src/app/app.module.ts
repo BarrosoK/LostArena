@@ -11,6 +11,7 @@ import {
   MatSidenavModule,
   MatIconModule,
   MatListModule,
+  MatGridListModule,
   MatProgressSpinnerModule, MatInputModule, MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule
 } from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
@@ -30,14 +31,15 @@ import {NgxsLoggerPluginModule} from '@ngxs/logger-plugin';
 import {NgxsReduxDevtoolsPluginModule} from '@ngxs/devtools-plugin';
 import {JWTInterceptor} from '../interceptors/jwtInterceptor';
 
+import {MatBadgeModule} from '@angular/material/badge';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CharactersComponent} from './characters/characters.component';
 import {CreationComponent} from './characters/creation/creation.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import {SocketState} from "./stores/states/socket.state";
+import {SocketState} from './stores/states/socket.state';
 
-const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
+const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
 
 @NgModule({
   declarations: [
@@ -62,7 +64,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     MatSidenavModule,
     MatIconModule,
     MatListModule,
+    MatBadgeModule,
     MatDialogModule,
+    MatGridListModule,
     FlexLayoutModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
