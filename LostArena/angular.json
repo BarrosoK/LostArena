@@ -24,7 +24,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ],
             "styles": [
               "node_modules/@a.grisevich/ng-zorro-antd/src/ng-zorro-antd.min.css",
@@ -36,7 +37,9 @@
             ],
             "scripts": [
               "node_modules/chart.js/dist/Chart.js",
-              "node_modules/hammerjs/hammer.min.js"
+              "node_modules/hammerjs/hammer.min.js",
+              "node_modules/pixi.js/dist/pixi.min.js",
+
             ]
           },
           "configurations": {
@@ -55,7 +58,8 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "serviceWorker": true
             }
           }
         },
@@ -91,7 +95,8 @@
             "scripts": [],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.json"
             ]
           }
         },

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../environments/environment';
 import {JWTInterceptor} from '../interceptors/jwtInterceptor';
-import {Character} from '../app/models/character';
+import {Character, ICharacter} from '../app/models/Character';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {Store} from '@ngxs/store';
@@ -14,8 +14,8 @@ import {SetCharacters} from '../app/stores/actions/character.actions';
 })
 export class CharacterService {
 
-  selectedCharacter$: Observable<Character>;
-  characters$: Observable<Character[]>;
+  selectedCharacter$: Observable<ICharacter>;
+  characters$: Observable<ICharacter[]>;
 
   constructor(private httpClient: HttpClient, private store: Store) {
     this.store.select(UserState.token).subscribe(token => {
@@ -37,3 +37,4 @@ export class CharacterService {
     return this.httpClient.post(environment.api.character, characterInfo, JWTInterceptor.createHeader());
   }
 }
+

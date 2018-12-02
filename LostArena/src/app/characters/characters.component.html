@@ -1,15 +1,12 @@
-<div class="mat-display-1 border-bottom m-2 p-2">
-  My Characters
-</div>
-
-<div fxLayout="column" fxLayoutAlign="center center">
-
-<button mdbBtn type="button" color="primary" outline="true" mdbWavesEffect (click)="openDialog()">Create character</button>
-<div *ngIf="(characterService.selectedCharacter$ | async) as character">
-  <span class="mat-h4">Selected character: </span><span class="mat-body-strong">{{ character.name }}</span>
-</div>
-
-</div>
+<blockquote class="blockquote bq-primary">
+  <div fxLayout="column" fxLayoutAlign="start center">
+  <p class="bq-title">Characters</p>
+  <div *ngIf="(characterService.selectedCharacter$ | async) as character">
+    <span class="mat-h4">Selected character: </span><span class="mat-body-strong">{{ character.name }}</span>
+  </div>
+  <button mdbBtn type="button" color="primary" outline="true" mdbWavesEffect (click)="openDialog()">Create character</button>
+  </div>
+</blockquote>
 
 
 <mat-grid-list [cols]="(isMobile) ? 1 : 4"  rowHeight="1:1.4" gutterSize="1rem">

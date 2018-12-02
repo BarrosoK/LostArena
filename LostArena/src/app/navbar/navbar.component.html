@@ -20,7 +20,8 @@
         </div>
         <div *ngIf="(authService.token$ | async)">
           <!-- LOGGED -->
-          <a mat-list-item routerLink="characters" routerLinkActive="active">Characters</a>
+          <a mat-list-item routerLink="characters" routerLinkActive="active" (click)="onNavClick()">Characters</a>
+          <a mat-list-item *ngIf="(selectedCharacter$ | async)" routerLink="combat" routerLinkActive="active" (click)="onNavClick()">Combat</a>
           <a mat-list-item routerLink="login" (click)="authService.logout()" routerLinkActive="active">Logout</a>
         </div>
       </div>
@@ -56,7 +57,7 @@
           </button>
 
 
-          <div class="dropdown-menu dropdown-primary">
+          <div class="dropdown-menu dropdown-primary dropdown-menu-right">
             <mat-nav-list>
               <mat-list-item *ngFor="let msg of (socket.messagesSystem$ | async | slice:0:5) ; index as i">
                 <a matLine>{{ msg }}</a>

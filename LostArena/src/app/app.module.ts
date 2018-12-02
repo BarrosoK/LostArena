@@ -38,6 +38,9 @@ import {CreationComponent} from './characters/creation/creation.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import {SocketState} from './stores/states/socket.state';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { CombatComponent } from './combat/combat.component';
 
 const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
 
@@ -52,6 +55,7 @@ const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} }
     LogoutComponent,
     CharactersComponent,
     CreationComponent,
+    CombatComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +88,8 @@ const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} }
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     DragDropModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled:  environment.production })
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

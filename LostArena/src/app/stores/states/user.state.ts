@@ -2,14 +2,14 @@ import {Action, Select, Selector, State, StateContext} from '@ngxs/store';
 import {AuthService} from '../../../services/auth.service';
 import {SetSession, SetToken, SetUser} from '../actions/user.actions';
 import {Observable} from 'rxjs';
-import {Character} from '../../models/character';
+import {Character, ICharacter} from '../../models/Character';
 import {AddCharacter, SelectCharacter, SetCharacters} from '../actions/character.actions';
 
 export interface UserStateModel {
   token: string;
   user: any;
-  selectedCharacter: Character;
-  characters: Character[];
+  selectedCharacter: ICharacter;
+  characters: ICharacter[];
 }​
 
 @State<UserStateModel>({

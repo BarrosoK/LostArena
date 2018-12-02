@@ -20,4 +20,8 @@ CharacterSchema.pre('findOne', function() {
     this.populate('user');
 });
 
+CharacterSchema.methods.fight = function(target) {
+    console.log('bonjour');
+};
+
 let Character = module.exports = mongoose.model('Character', CharacterSchema);

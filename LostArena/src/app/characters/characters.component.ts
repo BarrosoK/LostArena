@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {CharacterService} from '../../services/character.service';
 import {Store} from '@ngxs/store';
-import {Character} from '../models/character';
+import {Character, ICharacter} from '../models/Character';
 import {SelectCharacter} from '../stores/actions/character.actions';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {CreationComponent} from './creation/creation.component';
-import {NavbarComponent} from "../navbar/navbar.component";
-import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {NavbarComponent} from '../navbar/navbar.component';
+import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-characters',
@@ -24,7 +24,7 @@ export class CharactersComponent implements OnInit {
     );
 
 
-  constructor(protected characterService: CharacterService, public store: Store, public dialog: MatDialog,
+  constructor(public characterService: CharacterService, public store: Store, public dialog: MatDialog,
               private breakpointObserver: BreakpointObserver, private snackbar: MatSnackBar) {
   }
 
@@ -34,7 +34,7 @@ export class CharactersComponent implements OnInit {
     });
   }
 
-  selectCharacter(character: Character) {
+  selectCharacter(character: ICharacter) {
     this.store.dispatch(new SelectCharacter(character));
     this.snackbar.open(character.name + ' selected', 'Close');
   }

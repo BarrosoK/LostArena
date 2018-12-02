@@ -11,14 +11,16 @@ const path              = require('path');
 
 require('./../middleware/passport')(passport);
 
+router.post(    '/combat',          passport.authenticate('jwt', {session:false}), CharactersController.fight);
+
 /* CHARACTERS */
-router.get(     '/characters',    passport.authenticate('jwt', {session:false}), CharactersController.get);   // C
+router.get(     '/characters',      passport.authenticate('jwt', {session:false}), CharactersController.get);   // C
 
 /* CHARACTER */
-router.post(    '/character',      passport.authenticate('jwt', {session:false}), CharacterController.create); // C
-router.get(     '/character',      passport.authenticate('jwt', {session:false}), CharacterController.get);    // R
-router.put(     '/character',      passport.authenticate('jwt', {session:false}), CharacterController.update); // U
-router.delete(  '/character',      passport.authenticate('jwt', {session:false}), CharacterController.remove); // D
+router.post(    '/character',       passport.authenticate('jwt', {session:false}), CharacterController.create); // C
+router.get(     '/character',       passport.authenticate('jwt', {session:false}), CharacterController.get);    // R
+router.put(     '/character',       passport.authenticate('jwt', {session:false}), CharacterController.update); // U
+router.delete(  '/character',       passport.authenticate('jwt', {session:false}), CharacterController.remove); // D
 
 /* USER */
 router.post(    '/users',           UserController.create);                                                    // C

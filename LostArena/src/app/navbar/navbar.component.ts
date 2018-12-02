@@ -9,6 +9,7 @@ import {UserState, UserStateModel} from "../stores/states/user.state";
 import {Store} from "@ngxs/store";
 import {RemoveMessageSystem} from "../stores/actions/socket.actions";
 import {SocketState} from "../stores/states/socket.state";
+import {ICharacter} from "../models/Character";
 
 @Component({
   selector: 'app-navbar',
@@ -19,6 +20,7 @@ export class NavbarComponent implements OnInit {
 
   static isMobile = false;
   session$;
+  selectedCharacter$: Observable<ICharacter>;
 
   @ViewChild('drawer') sidenav: MatSidenav;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -28,7 +30,6 @@ export class NavbarComponent implements OnInit {
 
   toogleNav() {
     console.log(this.sidenav);
-
   }
 
   onNavClick() {
@@ -54,8 +55,9 @@ export class NavbarComponent implements OnInit {
     this.store.dispatch(new RemoveMessageSystem(index));
   }
 
-  constructor(private breakpointObserver: BreakpointObserver, protected authService: AuthService,
-              protected socket: SocketService, private store: Store) {
+  constructor(private breakpointObserver: BreakpointObserver, public authService: AuthService,
+              public socket: SocketService, private store: Store) {
+    this.selectedCharacter$ = this.store.select(UserState.selectedCharacter);
    }
 
 }

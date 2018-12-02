@@ -1,16 +1,16 @@
-import {Character} from "../../models/character";
+import {Character, ICharacter} from '../../models/Character';
 
 export class SetCharacters {
-  static readonly type = '[Character] SetCharacters';
-  constructor(public characters: Character[]) {}
+  static readonly type = '[ICharacter] SetCharacters';
+  constructor(public characters: ICharacter[]) {}
 }
 
 export class AddCharacter {
-  static readonly type = '[Character] AddCharacter';
-  constructor(public character: Character) {}
+  static readonly type = '[ICharacter] AddCharacter';
+  constructor(public character: ICharacter) {}
 }
 
 export class SelectCharacter {
-  static readonly type = '[Character] SelectCharacter';
-  constructor(public character: Character) {}
+  static readonly type = '[ICharacter] SelectCharacter';
+  constructor(public character: ICharacter) {}
 }

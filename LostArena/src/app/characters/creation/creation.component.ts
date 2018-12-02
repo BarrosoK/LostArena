@@ -5,8 +5,8 @@ import {AuthService} from '../../../services/auth.service';
 import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
 import {CharacterService} from '../../../services/character.service';
-import {Store} from "@ngxs/store";
-import {AddCharacter} from "../../stores/actions/character.actions";
+import {Store} from '@ngxs/store';
+import {AddCharacter} from '../../stores/actions/character.actions';
 
 @Component({
   selector: 'app-creation',
@@ -42,7 +42,7 @@ export class CreationComponent implements OnInit {
       console.log(res);
       if (res['success']) {
         this.store.dispatch(new AddCharacter(res['character']));
-        this.snackBar.open('Character created !',  'Close', {duration: 2000});
+        this.snackBar.open('ICharacter created !',  'Close', {duration: 2000});
         this.dialogRef.close();
       }
     });

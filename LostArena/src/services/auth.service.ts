@@ -9,7 +9,7 @@ import {environment} from '../environments/environment';
 import {MatSnackBar} from '@angular/material';
 import {JWTInterceptor} from "../interceptors/jwtInterceptor";
 import {CharacterService} from "./character.service";
-import {Character} from "../app/models/character";
+import {Character} from "../app/models/Character";
 import {SelectCharacter, SetCharacters} from "../app/stores/actions/character.actions";
 
 @Injectable({
