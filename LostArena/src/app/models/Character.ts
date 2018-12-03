@@ -37,12 +37,17 @@ export class Character implements ICharacter {
   pApp: any;
   spine: any;
   state: CharacterState;
+  x: number;
+  y: number;
 
-  constructor(pApp) {
+  constructor(pApp, x, y) {
     this.pApp = pApp;
+    this.x = x;
+    this.y = y;
 
     if (!PIXI.loader.resources.spineboy) {
-      PIXI.loader.add('spineboy', '/assets/spine/human/human.json').load((loader, res) => this.onAssetsLoaded(res));
+      PIXI.loader.add('spineboy', '/assets/spine/warrior/warrior.json')
+        .load((loader, res) => this.onAssetsLoaded(res));
       return;
     }
     this.onAssetsLoaded();
@@ -56,25 +61,29 @@ export class Character implements ICharacter {
       this.spine = new PIXI.spine.Spine(PIXI.loader.resources.spineboy.spineData);
     }
 
-    this.spine.x = this.pApp.screen.width / 2;
-    this.spine.y = this.pApp.screen.height;
+    this.spine.skeleton.setSkinByName('leather_armor');
+    this.spine.skeleton.setAttachment('arm_sword', 'leather');
+
+    this.spine.x = this.x;
+    this.spine.y = this.y;
 
     this.spine.scale.set(0.5);
+    this.flipX(true);
 
-    this.spine.stateData.setMix('walk', 'jump', 0.2);
-    this.spine.stateData.setMix('jump', 'walk', 0.4);
+    this.spine.stateData.setMix('run', 'jump', 0.2);
+    this.spine.stateData.setMix('jump', 'run', 0.4);
 
-    this.spine.state.setAnimation(0, 'walk', true);
+    this.spine.state.setAnimation(0, 'run', true);
 
     this.pApp.stage.addChild(this.spine);
 
     this.pApp.stage.on('pointerdown', () => {
-      console.log('oui');
-      if (this.spine.state.getCurrent(0).animation.name === 'jump') {
+      if (this.spine.state.getCurrent(0).animation.name === 'jump'
+      || this.spine.y < this.pApp.screen.height) {
         return;
       }
       this.spine.state.setAnimation(0, 'jump', false);
-      this.spine.state.addAnimation(0, 'walk', true, 0);
+      this.spine.state.addAnimation(0, 'run', true, 0);
     });
 
     this.state = CharacterState.ATTACK;
@@ -92,15 +101,24 @@ export class Character implements ICharacter {
     this.sprite.rotation += value;
   }
 
+  hitWall() {
+  }
+
+  setAttachment(slotName: string, attachmentName: string) {
+    this.spine.skeleton.setAttachment(slotName, attachmentName);
+  }
+
   update(delta) {
 
 
     if (this.spine.x >= this.pApp.screen.width) {
-      this.flipX(true);
-      this.state = CharacterState.RETREAT;
-    } else if (this.spine.x <= 0) {
       this.flipX(false);
+      this.state = CharacterState.RETREAT;
+      this.hitWall();
+    } else if (this.spine.x <= 0) {
+      this.flipX(true);
       this.state = CharacterState.ATTACK;
+      this.hitWall();
     }
 
     if (this.spine.state.getCurrent(0).animation.name === 'jump') {
