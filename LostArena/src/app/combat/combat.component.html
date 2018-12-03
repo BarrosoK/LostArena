@@ -1,0 +1,30 @@
+<div fxLayout="column" fxLayoutAlign="center center" fxFlex="100%" class="bg-dark p-2">
+
+  <p class="mat-headline text-white">COMBAT</p>
+
+  <div fxLayout.lt-md="column" fxLayout.gt-md="row" fxLayoutAlign="space-evenly center">
+
+    <div fxFlex="10%">
+      {{(selectedCharacter$ | async | json)}}
+    </div>
+
+    <div #pixiContainer></div>
+
+    <mat-card fxFlex="10%" fxLayout="column" fxLayoutAlign="center center" class=""
+         *ngIf="(selectedCharacter$ | async) as character">
+      <p class="mat-headline border-bottom">{{character.name}}</p>
+      <p>lvl: {{character.level}}</p>
+      <p>dex: {{character.dex}}</p>
+      <p>con: {{character.con}}</p>
+      <p>str: {{character.str}}</p>
+      <p>sta: {{character.sta}}</p>
+      <button (click)="changeWeapon(null)">empty</button>
+      <button (click)="changeWeapon('torso')">torso</button>
+      <button (click)="changeWeapon('golden')">golden</button>
+      <button (click)="changeWeapon('steel')">steel</button>
+      <button (click)="changeWeapon('leather')">leather</button>
+    </mat-card>
+
+  </div>
+
+</div>
