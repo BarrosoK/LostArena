@@ -1,6 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {MDBBootstrapModule, NavbarModule, WavesModule} from 'angular-bootstrap-md';
-
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -41,6 +40,8 @@ import {SocketState} from './stores/states/socket.state';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { CombatComponent } from './combat/combat.component';
+
+import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
 const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
 
@@ -88,6 +89,7 @@ const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} }
     NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     DragDropModule,
+    VirtualScrollerModule,
     SocketIoModule.forRoot(config),
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled:  environment.production })
   ],

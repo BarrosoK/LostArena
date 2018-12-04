@@ -5,7 +5,7 @@
   <div fxLayout.lt-md="column" fxLayout.gt-md="row" fxLayoutAlign="space-evenly center">
 
     <div fxFlex="10%">
-      {{(selectedCharacter$ | async | json)}}
+
     </div>
 
     <div #pixiContainer></div>
@@ -19,12 +19,21 @@
       <p>str: {{character.str}}</p>
       <p>sta: {{character.sta}}</p>
       <button (click)="changeWeapon(null)">empty</button>
+      <button (click)="fight()">FIGHT</button>
       <button (click)="changeWeapon('torso')">torso</button>
       <button (click)="changeWeapon('golden')">golden</button>
       <button (click)="changeWeapon('steel')">steel</button>
       <button (click)="changeWeapon('leather')">leather</button>
     </mat-card>
 
+  </div>
+
+  <div class="bg-light">
+    <virtual-scroller #scroll [items]="5" style="height: 200px; width: 200px">
+      <div *ngFor="let character of characters | async">
+        {{character.name}} <button (click)="fight(character)">Fight</button>
+      </div>
+    </virtual-scroller>
   </div>
 
 </div>

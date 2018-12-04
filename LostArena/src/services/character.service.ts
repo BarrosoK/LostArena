@@ -27,6 +27,12 @@ export class CharacterService {
     this.selectedCharacter$ = this.store.select(UserState.selectedCharacter);
   }
 
+  getCharacters() {
+    return this.httpClient.get<{ amount: number, characters: Character[] }>(environment.api.characters, JWTInterceptor.createHeader()).pipe(
+      map(({characters}) => characters)
+    );
+  }
+
   getMyCharacters(): Observable<Character[]> {
     return this.httpClient.get<{ characters: Character[] }>(environment.api.character, JWTInterceptor.createHeader()).pipe(
       map(({characters}) => characters)
@@ -36,5 +42,10 @@ export class CharacterService {
   createCharacter(characterInfo: Character) {
     return this.httpClient.post(environment.api.character, characterInfo, JWTInterceptor.createHeader());
   }
+
+  startFight(idPlayer: string, idEnemy: string) {
+    return this.httpClient.post(environment.api.combat, {_idPlayer: idPlayer, _idEnemy: idEnemy}, JWTInterceptor.createHeader());
+  }
+
 }
 

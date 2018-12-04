@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {UserState} from '../stores/states/user.state';
 import {map} from 'rxjs/operators';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
+import {CharacterService} from '../../services/character.service';
 
 declare var PIXI: any;
 
@@ -29,8 +30,12 @@ export class CombatComponent implements OnInit {
   player: Character;
   enemy: Character;
 
-  constructor(private breakpointObserver: BreakpointObserver, private store: Store) {
+  characters: Observable<ICharacter[]>;
+
+  constructor(private breakpointObserver: BreakpointObserver, private store: Store,
+              private characterService: CharacterService) {
     this.selectedCharacter$ = this.store.select(UserState.selectedCharacter);
+    this.characters = this.characterService.getCharacters();
   }
 
   width = 800;
@@ -57,8 +62,12 @@ export class CombatComponent implements OnInit {
 
     PIXI.loader.add('spineboy', '/assets/spine/warrior/warrior.json')
       .load((loader, res) => {
-        this.player = new Character(this.pApp, 0, this.pApp.screen.height);
-        this.enemy = new Character(this.pApp, this.pApp.screen.width - 50, this.pApp.screen.height);
+
+        this.selectedCharacter$.subscribe((c) => {
+          this.player = new Character(c, this.pApp, 0, this.pApp.screen.height);
+          this.enemy = new Character(c, this.pApp, this.pApp.screen.width - 50, this.pApp.screen.height);
+          this.enemy.flipX(false);
+        });
       });
 
   }
@@ -67,4 +76,26 @@ export class CombatComponent implements OnInit {
     this.player.setAttachment('arm_sword', sword);
   }
 
+  async fight(target: Character) {
+    const enemyId = target._id;
+
+    this.player.setTarget(this.enemy);
+    this.enemy.setTarget(this.player);
+    this.enemy.setCharacter(target);
+
+    this.selectedCharacter$.subscribe((c: ICharacter) => {
+      const playerId = c._id;
+      this.characterService.startFight(playerId, enemyId).subscribe((logs) => {
+        logs['logs']['turns'].forEach((turn) => {
+          this.player.queue.push(turn);
+          this.enemy.queue.push(turn);
+        });
+        if (logs['logs']['turns'][0]['attacker']['id'] === playerId) {
+          this.player.attack();
+        } else {
+          this.enemy.attack();
+        }
+      });
+    });
+  }
 }

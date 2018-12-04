@@ -68,6 +68,7 @@ export class AuthService {
       const char = c.characters.filter((chars) => {
         return chars._id === id;
       });
+      console.log(c);
       if (c.user.id && char.length > 0 && char[0].user_id === c.user.id) {
         this.store.dispatch(new SelectCharacter(char[0]));
       }
@@ -91,13 +92,14 @@ export class AuthService {
       this.store.dispatch(new SetToken(token));
       http.get(environment.api.profile, JWTInterceptor.createHeader()).subscribe((res) => {
         this.store.dispatch(new SetUser(res['user']));
+        this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
+          this.store.dispatch(new SetCharacters(characters));
+          this.recoverSelected();
+        });
       }, (res) => {
         console.log(res);
       });
-      this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
-        this.store.dispatch(new SetCharacters(characters));
-        this.recoverSelected();
-      });
+
     }
   }
 

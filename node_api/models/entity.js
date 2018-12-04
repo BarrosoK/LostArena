@@ -1,9 +1,9 @@
-module.exports.Player = class  {
+module.exports.Player = class {
 
 
     constructor(character) {
         this.character = character;
-        this.maxHealth = 40;
+        this.maxHealth = 100;
         this.currentHealth = this.maxHealth;
     }
 
@@ -37,34 +37,40 @@ module.exports.Player = class  {
         this.atkSpeed = 2;
         target.atkSpeed = 1;
 
-        let next = this.atkSpeed > target.atkSpeed ? this : target;
-        let turns = [];
+        this.turnToWait = 10 - this.atkSpeed * 2;
+        target.turnToWait = 10 - target.atkSpeed * 2;
+
         let turn = 1;
         let result = {};
         let atkLog = {};
 
-        turns.push({id: next.character._id, turn: 0});
+        let warriors = [this, target];
+
         while (!this.isDead() && !target.isDead()) {
 
-            if (turns[0].id === this.character._id) {
-                // Player Turn
-                atkLog = this.attack(target);
-                turns.push({id: target.character._id});
-            } else {
-                // Enemy Turn
-                atkLog = target.attack(this);
-                turns.push({id: this.character._id});
-            }
-            logs.push({attack: atkLog, attacker: turns[0].id, turn: turn});
-            turns.shift();
-            turn += 1;
+            warriors.forEach((c) => {
+                c.turnToWait -= 1;
+                if (c.currentHealth >= 0 && c.turnToWait <= 0) {
+                    // Time to attack !
+                    if (c.character._id === this.character._id) {
+                        // Player Turn
+                        atkLog = this.attack(target);
+                    } else {
+                        // Enemy Turn
+                        atkLog = target.attack(this);
+                    }
+                    logs.push({attack: atkLog, attacker: {id: c.character._id, name: c.character.name}, turn: turn});
+                    c.turnToWait = 10 - c.atkSpeed * 2;
+                    turn += 1;
+                }
+            });
         }
 
         if (this.isDead()) {
             // LOST
             result.win = true;
             result.exp = 0;
-            resutl.gold = 0;
+            result.gold = 0;
         } else if (target.isDead()) {
             // WON
             result.win = false;
@@ -74,7 +80,7 @@ module.exports.Player = class  {
             // WTF ??
             console.log('IT HAPPENED');
         }
-        return {result, ...logs};
+        return {result, turns:logs};
     }
 
 };
