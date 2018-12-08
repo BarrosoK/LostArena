@@ -8,8 +8,8 @@ import {AddCharacter, SelectCharacter, SetCharacters} from '../actions/character
 export interface UserStateModel {
   token: string;
   user: any;
-  selectedCharacter: ICharacter;
-  characters: ICharacter[];
+  selectedCharacter: Character;
+  characters: Character[];
 }​
 
 @State<UserStateModel>({
@@ -49,15 +49,22 @@ export class UserState {
     const state = getState();
     localStorage.setItem('selected', character._id);
     patchState({
-      selectedCharacter: character
+      selectedCharacter: new Character(character)
     });
   }
 
   @Action(SetCharacters)
   setCharacters({getState, patchState}: StateContext<UserStateModel>, {characters}: SetCharacters) {
     const state = getState();
+    const char: Character[] = [];
+
+
+    characters.forEach((c) => {
+      char.push(new Character(c));
+    });
+
     patchState({
-      characters: characters
+      characters: char
     });
   }
 
@@ -65,7 +72,7 @@ export class UserState {
   addCharacter({getState, patchState}: StateContext<UserStateModel>, {character}: AddCharacter) {
     const state = getState();
     patchState({
-      characters: [...state.characters, character]
+      characters: [...state.characters, new Character(character)]
     });
   }
 

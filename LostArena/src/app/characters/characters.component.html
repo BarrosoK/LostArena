@@ -3,6 +3,14 @@
   <p class="bq-title">Characters</p>
   <div *ngIf="(characterService.selectedCharacter$ | async) as character">
     <span class="mat-h4">Selected character: </span><span class="mat-body-strong">{{ character.name }}</span>
+    <div *ngFor="let e of character.equipped  | keyvalue" >
+       <div fxLayout="column" fxLayoutAlign="center center">
+         {{e.value.name}} [{{e.key}}]
+          <div *ngFor="let bonus of e.value.bonus  | keyvalue">
+            {{bonus.key}}: {{bonus.value}}
+          </div>
+       </div>
+    </div>
   </div>
   <button mdbBtn type="button" color="primary" outline="true" mdbWavesEffect (click)="openDialog()">Create character</button>
   </div>
@@ -22,13 +30,12 @@
       </div>
       <mdb-card-body>
         <mdb-card-title>
-          <h4>{{ character.name }}</h4>
+          <h4>{{ character.name }}<span class="mat-h4">[{{character.level}}]</span></h4>
         </mdb-card-title>
-        level: {{ character.level }}
-        STA: {{ character.sta }}
-        STR: {{ character.str }}
+        STA: {{ character.getSta() }}
+        STR: {{ character.getStr() }}
         DEX: {{ character.dex }}
-        CON: {{ character.con }}
+        CON: {{ character.getCon() }}
       </mdb-card-body>
       <mdb-card-footer>
         <button mdbBtn color="primary" (click)="selectCharacter(character)" mdbWavesEffect>Select</button>

@@ -14,8 +14,8 @@
       <p class="mat-headline border-bottom">{{character.name}}</p>
       <p>lvl: {{character.level}}</p>
       <p>dex: {{character.dex}}</p>
-      <p>con: {{character.con}}</p>
-      <p>str: {{character.str}}</p>
+      <p>con: {{character.getCon()}}</p>
+      <p>str: {{character.getStr()}}</p>
       <p>sta: {{character.sta}}</p>
       <button (click)="changeWeapon(null)">empty</button>
       <button (click)="fight()">FIGHT</button>

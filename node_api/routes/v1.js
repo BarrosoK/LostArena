@@ -23,6 +23,7 @@ router.put(     '/character',       passport.authenticate('jwt', {session:false}
 router.delete(  '/character',       passport.authenticate('jwt', {session:false}), CharacterController.remove); // D
 
 /* ITEMS */
+router.post(    '/character/equip', passport.authenticate('jwt', {session:false}), CharacterController.equipItem);
 router.post(    '/character/item',  passport.authenticate('jwt', {session:false}), CharacterController.addItem);
 
 /* USER */

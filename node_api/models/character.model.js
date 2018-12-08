@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const User = require('./user.model');
 
+const equippmentParts = [
+    'head',
+    'weapon'
+]
+
 let CharacterSchema = mongoose.Schema({
     name: {type:String, index: true, unique: true},
     level: {type:Number},
@@ -9,6 +14,10 @@ let CharacterSchema = mongoose.Schema({
     con: Number,
     dex: Number,
     str: Number,
+    equipped: {
+        weapon: {type: mongoose.Schema.ObjectId, ref: 'Item'},
+        head: {type: mongoose.Schema.ObjectId, ref: 'Item'},
+    }
 },  {toJSON: {virtuals: true}});
 
 CharacterSchema.methods.toWeb = function(){
@@ -25,12 +34,18 @@ CharacterSchema.virtual('items', {
 CharacterSchema.pre('findOne', function() {
     this.populate('user');
     this.populate('items');
+    equippmentParts.forEach((part) => {
+        this.populate('equipped.' + part);
+    });
 });
 
 
 CharacterSchema.pre('find', function() {
     this.populate('user');
     this.populate('items');
+    equippmentParts.forEach((part) => {
+        this.populate('equipped.' + part);
+    });
 });
 
 CharacterSchema.methods.fight = function(target) {

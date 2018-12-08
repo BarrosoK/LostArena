@@ -6,8 +6,8 @@ import {UserState} from '../stores/states/user.state';
 import {map} from 'rxjs/operators';
 import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {CharacterService} from '../../services/character.service';
-import {SocketService} from "../../services/socket.service";
-import {AddMessageCombat} from "../stores/actions/socket.actions";
+import {SocketService} from '../../services/socket.service';
+import {AddMessageCombat} from '../stores/actions/socket.actions';
 
 declare var PIXI: any;
 

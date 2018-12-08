@@ -2,7 +2,7 @@ import {Store} from '@ngxs/store';
 
 declare var PIXI: any;
 import 'pixi-spine';
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 
 export interface ICharacter {
   _id: string;
@@ -13,11 +13,17 @@ export interface ICharacter {
   con: number;
   dex: number;
   user_id: string;
+  equipped: Object;
 }
 
 export const SPAWN_PLAYER = 150;
 export const SPAWN_ENEMY = 650;
 export const DEFAULT_Y = 500;
+
+export const EquipmentParts = [
+  'head',
+  'weapon'
+];
 
 
 export enum CharacterState {
@@ -31,8 +37,13 @@ export enum CharacterState {
 
 export class Character implements ICharacter {
 
-  constructor(c: ICharacter, pApp, x, y) {
+  constructor(c: ICharacter, pApp = null, x = null, y = null) {
+    this.setCharacter(c);
+    if (!pApp) {
+      return;
+    }
     this.pApp = pApp;
+    this.equipped = c.equipped;
     this.x = x === 0 ? 0 + 50 : x;
     this.y = y;
     this.inFight = new BehaviorSubject<boolean>(false);
@@ -45,7 +56,6 @@ export class Character implements ICharacter {
       wordWrapWidth: 700
     });
     this.pApp.stage.addChild(this.healthText);
-    this.setCharacter(c);
     this.onAssetsLoaded();
   }
 
@@ -60,6 +70,9 @@ export class Character implements ICharacter {
   level: number;
   sta: number;
   str: number;
+
+  /* ITEM */
+  equipped: Object;
 
   /* DERIVED STATS */
   currentHealth: number;
@@ -92,9 +105,54 @@ export class Character implements ICharacter {
     return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
   }
 
+   getStr() {
+    let value = this.str;
+    if (this.equipped) {
+      EquipmentParts.forEach((p) => {
+        const part = this.equipped[p];
+        if (part && part['bonus']['STR']) {
+          value += part['bonus']['STR'];
+        }
+      });
+    }
+    return value;
+  }
+
+  getSta() {
+    let value = this.sta;
+    if (this.equipped) {
+      EquipmentParts.forEach((p) => {
+        const part = this.equipped[p];
+        if (part && part['bonus']['STA']) {
+          value += part['bonus']['STA'];
+        }
+      });
+    }
+    return value;
+  }
+
+  getCon() {
+    let value = this.con;
+    if (this.equipped) {
+      EquipmentParts.forEach((p) => {
+        const part = this.equipped[p];
+        if (part && part['bonus']['CON']) {
+          value += part['bonus']['CON'];
+        }
+      });
+    }
+    return value;
+  }
+
   setCharacter(c: ICharacter) {
+    this.equipped = c.equipped;
     this._id = c._id;
     this.name = c.name;
+    this.str = c.str;
+    this.sta = c.sta;
+    this.con = c.con;
+    this.user_id = c.user_id;
+    this.level = c.level;
   }
 
   setFightStatus(newValue: boolean): void {

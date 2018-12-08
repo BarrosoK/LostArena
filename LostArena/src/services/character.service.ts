@@ -14,8 +14,8 @@ import {SetCharacters} from '../app/stores/actions/character.actions';
 })
 export class CharacterService {
 
-  selectedCharacter$: Observable<ICharacter>;
-  characters$: Observable<ICharacter[]>;
+  selectedCharacter$: Observable<Character>;
+  characters$: Observable<Character[]>;
 
   constructor(private httpClient: HttpClient, private store: Store) {
     this.store.select(UserState.token).subscribe(token => {

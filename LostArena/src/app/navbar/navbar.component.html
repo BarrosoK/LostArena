@@ -21,7 +21,10 @@
         <div *ngIf="(authService.token$ | async)">
           <!-- LOGGED -->
           <a mat-list-item routerLink="characters" routerLinkActive="active" (click)="onNavClick()">Characters</a>
+          <!-- CHARACTER SELECTED -->
+          <a mat-list-item *ngIf="(selectedCharacter$ | async)" routerLink="character" routerLinkActive="active" (click)="onNavClick()">My Character</a>
           <a mat-list-item *ngIf="(selectedCharacter$ | async)" routerLink="combat" routerLinkActive="active" (click)="onNavClick()">Combat</a>
+          <!-- CHARACTER SELECTED -->
           <a mat-list-item routerLink="login" (click)="authService.logout()" routerLinkActive="active">Logout</a>
         </div>
       </div>

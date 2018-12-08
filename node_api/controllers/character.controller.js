@@ -1,7 +1,23 @@
-const { Character } = require('../models');
+const { Character, Item } = require('../models');
 const characterService = require('../services/character.service');
 const { to, ReE, ReS } = require('../services/util.service');
 
+
+const isMyChar = function(req, charId) {
+    character_id = charId;
+
+    character = req.user.characters.filter((char) => {
+        return char._id.toString() === character_id;
+    });
+
+    if (character.length <= 0) {
+        return false;
+    } else {
+        character = character[0];
+        return character;
+    }
+}
+module.exports.isMyChar = isMyChar;
 
 /* POST */
 const create = async function(req, res){
@@ -59,14 +75,8 @@ const remove = async function(req, res){
 
     character_id = req.body._id;
 
-    character = req.user.characters.filter((char) => {
-        return char._id.toString() === character_id;
-    });
-
-    if (character.length <= 0) {
+    if (!isMyChar(req, character_id)) {
         return ReE(res, {message: 'Not authorized'});
-    } else {
-        character = character[0];
     }
 
     [err, result] = await to(Character.deleteOne({_id:character_id}));
@@ -86,6 +96,10 @@ const addItem = async function(req, res){
     } else {
         let err, character;
 
+        if (!isMyChar(req, body.characterId)) {
+            return ReE(res, {message: 'Not authorized'});
+        }
+
         [err, character] = await to (characterService.addItemToCharacter(body.characterId, body.itemId));
 
         if (err) return ReE(res, err, 422);
@@ -93,3 +107,35 @@ const addItem = async function(req, res){
     }
 }
 module.exports.addItem = addItem;
+
+/* EQUIP ITEM */
+const equipItem = async function(req, res){
+    const body = req.body;
+    const charId = body.characterId;
+    const itemId = body.itemId;
+
+    let err, result, item;
+
+    if (!isMyChar(req, charId)) {
+        return ReE(res, {message: 'Not authorized'});
+    }
+
+    
+    [err, item] = await to(Item.findOne({_id: itemId}));
+    if (err) {
+        return ReE(res, err);
+    }
+    [err, result] = await to(Character.updateOne({_id:charId}, {
+        $set: {
+            equipped: {
+                [item['part']]: item
+            }
+        }
+    }));
+    if(err){
+        return ReE(res, err);
+    }
+    let char = await Character.findOne({_id: charId});
+    return ReS(res, {item: char});
+}
+module.exports.equipItem = equipItem;

@@ -66,15 +66,17 @@ export class AuthService {
 
   recoverSelected() {
     const id = localStorage.getItem('selected');
-    const characters = this.store.selectOnce(state => state.user).subscribe((c) => {
-      const char = c.characters.filter((chars) => {
-        return chars._id === id;
+    if (id) {
+      const characters = this.store.selectOnce(state => state.user).subscribe((c) => {
+        const char = c.characters.filter((chars) => {
+          return chars._id === id;
+        });
+        console.log(char);
+        if (c.user.id && char.length > 0 && char[0].user_id === c.user.id) {
+          this.store.dispatch(new SelectCharacter(char[0]));
+        }
       });
-      console.log(c);
-      if (c.user.id && char.length > 0 && char[0].user_id === c.user.id) {
-        this.store.dispatch(new SelectCharacter(char[0]));
-      }
-    });
+    }
   }
 
   logout() {
