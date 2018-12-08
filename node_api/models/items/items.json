@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "type": 0,
+        "name": "wooden stick",
+        "bonus": [
+            {
+                "STR": 14,
+                "variance": 5
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "type": 1,
+        "name": "wooden stick",
+        "bonus": [
+            {
+                "stat": "STR",
+                "default": 20,
+                "variance": 10
+            },
+            {
+                "stat": "CON",
+                "default": 14
+            }
+        ]
+    }
+]

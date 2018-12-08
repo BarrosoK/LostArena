@@ -1,7 +1,11 @@
+var socketio = require('../socket/socket');
 module.exports.Player = class {
 
 
     constructor(character) {
+        console.log(character);
+        this.name = character.name;
+        this.userId = character.user_id;
         this.character = character;
         this.maxHealth = 100;
         this.currentHealth = this.maxHealth;
@@ -18,7 +22,7 @@ module.exports.Player = class {
         }
         let attack = {};
 
-        attack.damages = Math.floor(Math.random() * 10) + 5;
+        attack.damages = Math.floor(Math.random() * 100) + 5;
         attack.isCrit = false;
         attack.isMiss = false;
         attack.isSkill = false;
@@ -29,6 +33,14 @@ module.exports.Player = class {
     receiveDamage(attack) {
         this.currentHealth -= +attack.damages;
         return attack;
+    }
+
+    sendSystemMessage(msg) {
+        socketio.emit(this.userId, 'msg_sys', msg);
+    }
+
+    sendMessage(event, msg) {
+        socketio.emit(this.userId, event, msg);
     }
 
     fight(target) {
@@ -68,12 +80,12 @@ module.exports.Player = class {
 
         if (this.isDead()) {
             // LOST
-            result.win = true;
+            result.win = false;
             result.exp = 0;
             result.gold = 0;
         } else if (target.isDead()) {
             // WON
-            result.win = false;
+            result.win = true;
             result.exp = 5;
             result.gold = 2;
         } else {

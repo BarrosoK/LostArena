@@ -10,7 +10,7 @@ var socket = require('./socket/socket');
 
 const app = express();
 const server = require('http').Server(app);
-socket.bind(server);
+socket.bind(server, app);
 
 const CONFIG = require('./config/config');
 app.use(logger('dev'));
@@ -36,6 +36,7 @@ app.use('/', function(req, res){
 	res.statusCode = 200;//send the appropriate status code
 	res.json({status:"success", message:"Mongo API", data:{}})
 });
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

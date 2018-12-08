@@ -11,6 +11,7 @@ import {JWTInterceptor} from "../interceptors/jwtInterceptor";
 import {CharacterService} from "./character.service";
 import {Character} from "../app/models/Character";
 import {SelectCharacter, SetCharacters} from "../app/stores/actions/character.actions";
+import {SocketService} from "./socket.service";
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,7 @@ export class AuthService {
       if (res['success']) {
         localStorage.setItem('token', res['token']);
         this.store.dispatch(new SetSession(res['token'], res['user']));
+        this.socket.login(res['user']);
         this.recoverSelected();
         this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
           this.store.dispatch(new SetCharacters(characters));
@@ -80,18 +82,20 @@ export class AuthService {
     {
       localStorage.removeItem('token');
       this.router.navigate(['login']);
+      this.socket.disconnect();
       this.store.dispatch(new SetSession(null, null));
     }
   }
 
   constructor(public snackBar: MatSnackBar, private http: HttpClient, private router: Router, private store: Store,
-              private characterService: CharacterService) {
+              private characterService: CharacterService, private socket: SocketService) {
     if (!this.store.selectSnapshot(UserState.token) && localStorage.getItem('token')) {
       // RETRIVE SESSION FROM LOCALSTORAGE
       const token = localStorage.getItem('token');
       this.store.dispatch(new SetToken(token));
       http.get(environment.api.profile, JWTInterceptor.createHeader()).subscribe((res) => {
         this.store.dispatch(new SetUser(res['user']));
+        this.socket.login(res['user']);
         this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
           this.store.dispatch(new SetCharacters(characters));
           this.recoverSelected();

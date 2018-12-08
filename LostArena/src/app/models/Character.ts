@@ -2,6 +2,7 @@ import {Store} from '@ngxs/store';
 
 declare var PIXI: any;
 import 'pixi-spine';
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 export interface ICharacter {
   _id: string;
@@ -14,11 +15,18 @@ export interface ICharacter {
   user_id: string;
 }
 
+export const SPAWN_PLAYER = 150;
+export const SPAWN_ENEMY = 650;
+export const DEFAULT_Y = 500;
+
+
 export enum CharacterState {
   IDLE,
   RUN,
   ATTACK,
-  RETREAT
+  RETREAT,
+  DEAD,
+  WON
 }
 
 export class Character implements ICharacter {
@@ -27,26 +35,37 @@ export class Character implements ICharacter {
     this.pApp = pApp;
     this.x = x === 0 ? 0 + 50 : x;
     this.y = y;
-
+    this.inFight = new BehaviorSubject<boolean>(false);
+    this.maximumHealth = 100;
+    this.currentHealth = this.maximumHealth;
+    this.healthText = new PIXI.Text(this.currentHealth + '/' + this.maximumHealth, {
+      fill: '#555555',
+      font: '48px Arial',
+      wordWrap: true,
+      wordWrapWidth: 700
+    });
+    this.pApp.stage.addChild(this.healthText);
     this.setCharacter(c);
-
-    if (!PIXI.loader.resources.spineboy) {
-      PIXI.loader.add('spineboy', '/assets/spine/warrior/warrior.json')
-        .load((loader, res) => this.onAssetsLoaded(res));
-      return;
-    }
     this.onAssetsLoaded();
   }
+
   /* CHARACTER */
   _id: string;
   name: string;
+  user_id: string;
+
+  /* BASE STATS */
   con: number;
   dex: number;
   level: number;
   sta: number;
   str: number;
-  user_id: string;
 
+  /* DERIVED STATS */
+  currentHealth: number;
+  maximumHealth: number;
+
+  /* COMBAT VAR */
   target: Character;
 
   /* PIXI */
@@ -61,6 +80,11 @@ export class Character implements ICharacter {
   queue = [];
   attacked = false;
   dirty = false;
+  delta: number;
+  inFight: BehaviorSubject<boolean>;
+
+  /* UI */
+  healthText;
 
   static intersect(a, b) {
     const ab = a.getBounds();
@@ -73,19 +97,27 @@ export class Character implements ICharacter {
     this.name = c.name;
   }
 
+  setFightStatus(newValue: boolean): void {
+    this.inFight.next(newValue);
+  }
+
+  getFightStatus(): Observable<boolean> {
+    return this.inFight.asObservable();
+  }
+
   onAssetsLoaded(res = null) {
 
     if (res) {
       this.spine = new PIXI.spine.Spine(res.spineboy.spineData);
     } else {
-      this.spine = new PIXI.spine.Spine(PIXI.loader.resources.spineboy.spineData);
+      this.spine = new PIXI.spine.Spine(this.pApp.loader.resources.spineboy.spineData);
     }
 
     this.spine.skeleton.setSkinByName('leather_armor');
     this.spine.skeleton.setAttachment('arm_sword', 'leather');
 
     this.spine.x = this.x;
-    this.spine.y = this.y;
+    this.spine.y = DEFAULT_Y;
 
     this.spine.scale.set(0.5);
     this.flipX(true);
@@ -116,11 +148,19 @@ export class Character implements ICharacter {
 
     this.ticker = new PIXI.ticker.Ticker()
       .add((delta) => {
+        if (!this.spine) {
+          return;
+        }
         this.checkCollisions();
         this.setAnimation();
         this.update(delta);
       })
       .start();
+  }
+
+  reset() {
+    this.currentHealth = this.maximumHealth;
+    this.state = CharacterState.IDLE;
   }
 
   flipX(value: boolean) {
@@ -166,7 +206,7 @@ export class Character implements ICharacter {
         if (this.spine.state.getCurrent(0).animation.name === 'idle') {
           return;
         }
-        this.spine.state.setAnimation(0, 'idle', true);
+        this.spine.state.addAnimation(0, 'idle', true);
         break;
       }
     }
@@ -211,6 +251,19 @@ export class Character implements ICharacter {
 
   setTarget(target: Character) {
     this.target = target;
+    if (this.target.spine.x < this.spine.x) {
+      this.flipX(false);
+    } else {
+      this.flipX(true);
+    }
+  }
+
+  doAttack(target: Character) {
+    this.pApp.ticker.add((delta) => {
+      this.spine.x += 1 * delta;
+      if (this.spine.x > 300) {
+      }
+    }).start();
   }
 
   attack(target: Character = null) {
@@ -228,14 +281,47 @@ export class Character implements ICharacter {
     setTimeout(() => {
       // OnComplete broken as fck
       this.flipX(!this.spine.skeleton.flipX);
+      this.target.currentHealth -= +this.queue[0]['attack']['damages'];
+      console.log(this.queue[0]);
+      this.queue.shift();
+      this.target.queue.shift();
+      this.state = CharacterState.RETREAT;
+      this.spine.state.addAnimation(0, 'run', true);
+      if (this.target.currentHealth <= 0) {
+        this.setFightStatus(false);
+        this.target.doDie();
+        this.win();
+      } else {
+        this.target.hit();
+      }
     }, wait);
-    this.queue.shift();
-    this.target.queue.shift();
-    this.state = CharacterState.RETREAT;
-    this.spine.state.addAnimation(0, 'run', true);
+
+  }
+
+  hit() {
+    this.spine.state.setAnimation(0, 'hit', false);
+  }
+
+  win() {
+    this.state = CharacterState.WON;
+    this.spine.state.setAnimation(0, 'jump', true);
+  }
+
+  doDie() {
+    this.state = CharacterState.DEAD;
+    this.spine.state.setAnimation(0, 'dying', false);
   }
 
   update(delta) {
+
+    if (this.currentHealth <= 0) {
+      this.currentHealth = 0;
+      this.healthText.text = this.currentHealth + '/' + this.maximumHealth;
+      return;
+    }
+    this.healthText.text = this.currentHealth + '/' + this.maximumHealth;
+    this.healthText.x = this.spine.x - this.healthText.width / 2;
+    this.healthText.y = DEFAULT_Y - this.spine.height - 50;
 
     if (!this.target || !this.ready) {
       return;
@@ -245,11 +331,6 @@ export class Character implements ICharacter {
       this.attack();
     }
 
-    if (this.spine.state.getCurrent(0).animation.name === 'jump') {
-      this.spine.y -= 3 * delta;
-    } else if (this.spine.y < this.pApp.screen.height) {
-      this.spine.y += 7 * delta;
-    }
 
     switch (this.state) {
       case CharacterState.RUN: {
@@ -267,6 +348,10 @@ export class Character implements ICharacter {
         if (this.attacked && (this.spine.x <= (0 + 150) || this.spine.x >= (this.pApp.screen.width - 150))) {
           this.state = CharacterState.IDLE;
           this.ready = false;
+          if (this.queue.length === 0) {
+            console.log('END');
+            return;
+          }
           if (this.queue[0]['attacker']['id'] === this._id) {
             this.attack();
           } else {

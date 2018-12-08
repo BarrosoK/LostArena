@@ -43,7 +43,7 @@ import { CombatComponent } from './combat/combat.component';
 
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 
-const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
 
 @NgModule({
   declarations: [

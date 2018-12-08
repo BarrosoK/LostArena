@@ -16,12 +16,24 @@ CharacterSchema.methods.toWeb = function(){
     return json;
 };
 
+CharacterSchema.virtual('items', {
+    ref: 'Item',
+    localField: '_id',
+    foreignField: 'character_id',
+});
+
 CharacterSchema.pre('findOne', function() {
     this.populate('user');
+    this.populate('items');
+});
+
+
+CharacterSchema.pre('find', function() {
+    this.populate('user');
+    this.populate('items');
 });
 
 CharacterSchema.methods.fight = function(target) {
     console.log('bonjour');
 };
-
 let Character = module.exports = mongoose.model('Character', CharacterSchema);

@@ -53,13 +53,13 @@
         <div class="btn-group" mdbDropdown>
           <button  mdbDropdownToggle type="button" mdbBtn color="deep-purple" class="waves-light" ngClass.lt-md=""
                   mdbWavesEffect>
-            <mat-icon aria-label="" [matBadge]="(socket.messagesSystem$ | async).length"  [matBadgeHidden]="(socket.messagesSystem$ | async).length === 0" matBadgeColor="accent" matBadgeSize="medium" matBadgePosition="below after">announcement</mat-icon>
+            <mat-icon aria-label="" [matBadge]="(socket.messagesCombat$ | async).length"  [matBadgeHidden]="(socket.messagesCombat$ | async).length === 0" matBadgeColor="accent" matBadgeSize="medium" matBadgePosition="below after">announcement</mat-icon>
           </button>
 
 
           <div class="dropdown-menu dropdown-primary dropdown-menu-right">
             <mat-nav-list>
-              <mat-list-item *ngFor="let msg of (socket.messagesSystem$ | async | slice:0:5) ; index as i">
+              <mat-list-item *ngFor="let msg of (socket.messagesCombat$ | async | slice:0:5) ; index as i">
                 <a matLine>{{ msg }}</a>
                 <button mat-icon-button (click)="remove(i)">
                   <mat-icon>remove_circle</mat-icon>

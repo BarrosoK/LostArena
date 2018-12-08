@@ -1,14 +1,16 @@
 import {Action, Select, Selector, State, StateContext} from '@ngxs/store';
-import {AddMessageSystem, RemoveMessageSystem} from '../actions/socket.actions';
+import {AddMessageCombat, AddMessageSystem, RemoveMessageCombat, RemoveMessageSystem} from '../actions/socket.actions';
 
 export interface SocketStateModel {
   sysMessages: string[];
+  cmbMessages: string[];
 }​
 
 @State<SocketStateModel>({
   name: 'socket',
   defaults: {
     sysMessages: [],
+    cmbMessages: []
   }
 })
 export class SocketState {
@@ -17,6 +19,11 @@ export class SocketState {
   @Selector()
   static sysMessages(state: SocketStateModel) {
     return state.sysMessages;
+  }
+
+  @Selector()
+  static cmbMessages(state: SocketStateModel) {
+    return state.cmbMessages;
   }
 
   @Action(RemoveMessageSystem)
@@ -34,6 +41,25 @@ export class SocketState {
     const state = getState();
     patchState({
       sysMessages: [message, ...state.sysMessages]
+    });
+  }
+
+
+  @Action(RemoveMessageCombat)
+  removeMessageCombat({getState, patchState}: StateContext<SocketStateModel>, {id}: RemoveMessageCombat) {
+    const state = getState();
+    patchState({
+      cmbMessages: state.cmbMessages.filter((msg, i) => {
+        return i !== +id;
+      })
+    });
+  }
+
+  @Action(AddMessageCombat)
+  addMessageCombat({getState, patchState}: StateContext<SocketStateModel>, {message}: AddMessageCombat) {
+    const state = getState();
+    patchState({
+      cmbMessages: [message, ...state.cmbMessages]
     });
   }
 }

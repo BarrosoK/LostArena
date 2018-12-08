@@ -2,6 +2,8 @@ const { Character } = require('../models');
 const characterService = require('../services/character.service');
 const { to, ReE, ReS } = require('../services/util.service');
 
+
+/* POST */
 const create = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
     const body = req.body;
@@ -18,6 +20,7 @@ const create = async function(req, res){
 };
 module.exports.create = create;
 
+/* GET */
 const get = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
     let characters = req.user.characters;
@@ -25,6 +28,7 @@ const get = async function(req, res){
 };
 module.exports.get = get;
 
+/* PUT */
 const update = async function(req, res){
     let err, character, character_id, result;
 
@@ -49,6 +53,7 @@ const update = async function(req, res){
 };
 module.exports.update = update;
 
+/* DELETE */
 const remove = async function(req, res){
     let err, character, character_id, result;
 
@@ -71,3 +76,20 @@ const remove = async function(req, res){
     return ReS(res);
 };
 module.exports.remove = remove;
+
+/* POST */
+const addItem = async function(req, res){
+    res.setHeader('Content-Type', 'application/json');
+    const body = req.body;
+    if (!body.itemId) {
+        return ReE(res, 'Pleaser enter a item id');
+    } else {
+        let err, character;
+
+        [err, character] = await to (characterService.addItemToCharacter(body.characterId, body.itemId));
+
+        if (err) return ReE(res, err, 422);
+        return ReS(res, {message:'Successfully created a new character', character: character.toJSON()});
+    }
+}
+module.exports.addItem = addItem;

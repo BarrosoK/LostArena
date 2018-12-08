@@ -5,7 +5,6 @@
   <div fxLayout.lt-md="column" fxLayout.gt-md="row" fxLayoutAlign="space-evenly center">
 
     <div fxFlex="10%">
-
     </div>
 
     <div #pixiContainer></div>
@@ -28,10 +27,12 @@
 
   </div>
 
-  <div class="bg-light">
-    <virtual-scroller #scroll [items]="5" style="height: 200px; width: 200px">
+  <div class="bg-light" *ngIf="player && !(player.getFightStatus() | async)">
+    <virtual-scroller #scroll [items]="5" style="height: 300px; width: 400px">
       <div *ngFor="let character of characters | async">
-        {{character.name}} <button (click)="fight(character)">Fight</button>
+        <div *ngIf="(selectedCharacter$ | async)._id !== character._id">
+          {{character.name}} <button (click)="fight(character)">Fight</button>
+        </div>
       </div>
     </virtual-scroller>
   </div>

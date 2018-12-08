@@ -37,7 +37,6 @@ UserSchema.pre('findOne', function() {
 });
 
 UserSchema.pre('findById', function() {
-    this.populate('characters');
 });
 
 UserSchema.pre('save', async function(next){
