@@ -13,7 +13,7 @@
     {
         "id": 1,
         "type": 1,
-        "part": "head",
+        "part": "weapon",
         "name": "wooden stick",
         "bonus": [
             {

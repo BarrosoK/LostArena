@@ -346,14 +346,18 @@ export class Character implements ICharacter {
       this.state = CharacterState.RETREAT;
       this.spine.state.addAnimation(0, 'run', true);
       if (this.target.currentHealth <= 0) {
-        this.setFightStatus(false);
+        this.end();
         this.target.doDie();
         this.win();
       } else {
         this.target.hit();
       }
     }, wait);
+  }
 
+  end() {
+    this.target.setFightStatus(false);
+    this.setFightStatus(false);
   }
 
   hit() {
@@ -377,7 +381,7 @@ export class Character implements ICharacter {
       this.healthText.text = this.currentHealth + '/' + this.maximumHealth;
       return;
     }
-    this.healthText.text = this.currentHealth + '/' + this.maximumHealth;
+    this.healthText.text = Math.floor(this.currentHealth) + '/' + this.maximumHealth;
     this.healthText.x = this.spine.x - this.healthText.width / 2;
     this.healthText.y = DEFAULT_Y - this.spine.height - 50;
 

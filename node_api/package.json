@@ -7,6 +7,9 @@
   },
   "dependencies": {
     "await-to-js": "^2.0.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
     "bcrypt": "^1.0.3",
     "bcrypt-promise": "^2.0.0",
     "body-parser": "~1.18.2",
@@ -27,5 +30,14 @@
     "serve-favicon": "~2.4.5",
     "socket.io": "^2.1.1",
     "validator": "^9.2.0"
-  }
+  },
+  "main": "app.js",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

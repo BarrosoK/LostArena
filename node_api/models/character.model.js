@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('./user.model');
-
-const equippmentParts = [
-    'head',
-    'weapon'
-]
+import {equippmentParts} from './item.enum';
 
 let CharacterSchema = mongoose.Schema({
     name: {type:String, index: true, unique: true},

@@ -1,15 +1,46 @@
 var socketio = require('../socket/socket');
+import {equippmentParts} from './item.enum';
+
 module.exports.Player = class {
 
 
     constructor(character) {
-        console.log(character);
         this.name = character.name;
         this.userId = character.user_id;
         this.character = character;
+        this.str = character.str;
+        this.equipped = character.equipped;
         this.maxHealth = 100;
         this.currentHealth = this.maxHealth;
     }
+
+    getStr() {
+        let value = this.str;
+        if (this.equipped) {
+          equippmentParts.forEach((p) => {
+            const part = this.equipped[p];
+            if (part && part['bonus']['STR']) {
+              value += part['bonus']['STR'];
+            }
+          });
+        }
+        return value;
+      }
+
+      getSta() {
+        let value = this.sta;
+        if (this.equipped) {
+          equippmentParts.forEach((p) => {
+            const part = this.equipped[p];
+            if (part && part['bonus']['STA']) {
+              value += part['bonus']['STA'];
+            }
+          });
+        }
+        return value;
+      }
+    
+    
 
     isDead() {
         return this.currentHealth <= 0;
@@ -22,7 +53,8 @@ module.exports.Player = class {
         }
         let attack = {};
 
-        attack.damages = Math.floor(Math.random() * 100) + 5;
+
+        attack.damages = this.getStr(); // Math.floor(Math.random() * 100) + 5;
         attack.isCrit = false;
         attack.isMiss = false;
         attack.isSkill = false;

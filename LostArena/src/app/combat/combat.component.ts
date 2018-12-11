@@ -173,11 +173,6 @@ export class CombatComponent implements OnInit, OnDestroy {
       waitingResult = m.toString();
     });
     const tst = this.player.getFightStatus().subscribe((inFight) => {
-
-
-
-
-
       if (!inFight) {
         console.log('add', waitingResult);
         this.store.dispatch(new AddMessageCombat(waitingResult));

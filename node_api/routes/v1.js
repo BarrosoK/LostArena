@@ -11,6 +11,7 @@ const path              = require('path');
 
 require('./../middleware/passport')(passport);
 
+/* COMBAT 1V1 */
 router.post(    '/combat',          passport.authenticate('jwt', {session:false}), CharactersController.fight);
 
 /* CHARACTERS */
