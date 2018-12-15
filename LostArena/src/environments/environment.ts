@@ -14,7 +14,8 @@ export const environment = {
     user: apiBase + apiVersion + 'users/',
     character: apiBase + apiVersion + 'character',
     characters: apiBase + apiVersion + 'characters',
-    combat: apiBase + apiVersion + 'combat'
+    combat: apiBase + apiVersion + 'combat',
+    items: apiBase + apiVersion + 'items'
   }
 };
 

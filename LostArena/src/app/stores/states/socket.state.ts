@@ -1,16 +1,26 @@
 import {Action, Select, Selector, State, StateContext} from '@ngxs/store';
-import {AddMessageCombat, AddMessageSystem, RemoveMessageCombat, RemoveMessageSystem} from '../actions/socket.actions';
+import {
+  AddChatRoom,
+  AddMessageCombat,
+  AddMessageSystem, RemoveChatRoom,
+  RemoveMessageCombat,
+  RemoveMessageSystem
+} from '../actions/socket.actions';
+import {CharacterChat} from '../../models/Character';
+import {st} from "@angular/core/src/render3";
 
 export interface SocketStateModel {
   sysMessages: string[];
   cmbMessages: string[];
+  chatRoom: CharacterChat[];
 }​
 
 @State<SocketStateModel>({
   name: 'socket',
   defaults: {
     sysMessages: [],
-    cmbMessages: []
+    cmbMessages: [],
+    chatRoom: []
   }
 })
 export class SocketState {
@@ -24,6 +34,11 @@ export class SocketState {
   @Selector()
   static cmbMessages(state: SocketStateModel) {
     return state.cmbMessages;
+  }
+
+  @Selector()
+  static chatRoom(state: SocketStateModel) {
+    return state.chatRoom;
   }
 
   @Action(RemoveMessageSystem)
@@ -60,6 +75,27 @@ export class SocketState {
     const state = getState();
     patchState({
       cmbMessages: [message, ...state.cmbMessages]
+    });
+  }
+
+  @Action(AddChatRoom)
+  addChatRoom({getState, patchState}: StateContext<SocketStateModel>, {payload}: AddChatRoom) {
+    const state = getState();
+    payload.id = state.chatRoom.length;
+    patchState({
+      chatRoom: [payload, ...state.chatRoom]
+    });
+  }
+
+  @Action(RemoveChatRoom)
+  removeChatRoom({getState, patchState}: StateContext<SocketStateModel>, {payload}: RemoveChatRoom) {
+    const state = getState();
+    const c = state.chatRoom.filter(c => c.name === payload);
+    c[0].remove();
+    patchState({
+      chatRoom: state.chatRoom.filter((i) => {
+        return i.name !== payload;
+      })
     });
   }
 }

@@ -5,6 +5,7 @@ import {Store} from '@ngxs/store';
 import {AddMessageSystem} from '../app/stores/actions/socket.actions';
 import {Observable} from 'rxjs';
 import {SocketState} from '../app/stores/states/socket.state';
+import {CharacterChat} from '../app/models/Character';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +47,42 @@ export class SocketService {
 
   getMessageCombat() {
     return this.socket.fromOneTimeEvent('combat');
+  }
+
+  onChatRoomJoin() {
+    return this.socket.fromEvent('chatroom join');
+  }
+
+  onChatRoomList() {
+    return this.socket.fromEvent('chatroom list');
+  }
+
+  addChatRoom(character: CharacterChat) {
+    this.socket.emit('chatroom join',
+      {
+        id: character.id,
+        name: character.name,
+        position: character.position
+    });
+  }
+
+  removeChatRoom(characterId: number) {
+
+  }
+
+  onChatRoomLeave() {
+    return this.socket.fromEvent('chatroom leave');
+  }
+
+  chatRoomLeave() {
+    this.socket.emit('chatroom leave', '');
+  }
+
+  onChatRoomMove() {
+    return this.socket.fromEvent('chatroom move');
+  }
+
+  move(position: any, face: boolean) {
+    this.socket.emit('chatroom move', {position: position, face: face});
   }
 }

@@ -32,10 +32,6 @@
         <mdb-card-title>
           <h4>{{ character.name }}<span class="mat-h4">[{{character.level}}]</span></h4>
         </mdb-card-title>
-        STA: {{ character.getSta() }}
-        STR: {{ character.getStr() }}
-        DEX: {{ character.dex }}
-        CON: {{ character.getCon() }}
       </mdb-card-body>
       <mdb-card-footer>
         <button mdbBtn color="primary" (click)="selectCharacter(character)" mdbWavesEffect>Select</button>

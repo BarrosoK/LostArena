@@ -17,7 +17,7 @@ const getUniqueKeyFromBody = function(body){// this is so they can send in 3 opt
 module.exports.getUniqueKeyFromBody = getUniqueKeyFromBody;
 
 const createUser = async function(userInfo){
-    let unique_key, auth_info, err;
+    let unique_key, auth_info, err, user;
 
     auth_info={}
     auth_info.status='create';
@@ -61,7 +61,7 @@ const authUser = async function(userInfo){//returns token
 
     if(!userInfo.password) TE('Please enter a password to login');
 
-    let user;
+    let user, err;
     auth_info.method='username';
 
     [err, user] = await to(User.findOne({username:unique_key }));

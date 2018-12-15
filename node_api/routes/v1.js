@@ -2,6 +2,7 @@ const express 			= require('express');
 const router 			= express.Router();
 
 const CharacterController = require('../controllers/character.controller');
+const ItemController = require('../controllers/item.controller');
 const CharactersController = require('../controllers/characters.controller');
 const UserController 	= require('../controllers/user.controller');
 
@@ -24,8 +25,10 @@ router.put(     '/character',       passport.authenticate('jwt', {session:false}
 router.delete(  '/character',       passport.authenticate('jwt', {session:false}), CharacterController.remove); // D
 
 /* ITEMS */
+router.get(     '/items',           passport.authenticate('jwt', {session:false}), ItemController.get);
 router.post(    '/character/equip', passport.authenticate('jwt', {session:false}), CharacterController.equipItem);
 router.post(    '/character/item',  passport.authenticate('jwt', {session:false}), CharacterController.addItem);
+router.get(    '/character/:id/item',  passport.authenticate('jwt', {session:false}), CharacterController.getItem);
 
 /* USER */
 router.post(    '/users',           UserController.create);                                                    // C

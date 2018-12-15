@@ -1,3 +1,5 @@
+import {CharacterChat} from "../../models/Character";
+
 export class AddMessageSystem {
   static readonly type = '[Socket] AddMessageSystem';
   constructor(public message: string) {}
@@ -16,4 +18,14 @@ export class AddMessageCombat {
 export class RemoveMessageCombat {
   static readonly type = '[Socket] RemoveMessageCombat';
   constructor(public id: string) {}
+}
+
+export class AddChatRoom {
+  static readonly type = '[Socket] AddChatRoom';
+  constructor(public payload: CharacterChat) {}
+}
+
+export class RemoveChatRoom {
+  static readonly type = '[Socket] RemoveChatRoom';
+  constructor(public payload) {}
 }

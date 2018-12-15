@@ -3,6 +3,7 @@
         "id": 0,
         "type": 0,
         "name": "wooden stick",
+        "img": "icon-144x144.png",
         "bonus": [
             {
                 "STR": 14,
@@ -15,6 +16,7 @@
         "type": 1,
         "part": "weapon",
         "name": "wooden stick",
+        "img": "icon-144x144.png",
         "bonus": [
             {
                 "stat": "STR",

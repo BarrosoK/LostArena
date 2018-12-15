@@ -3,6 +3,8 @@ import {Store} from '@ngxs/store';
 declare var PIXI: any;
 import 'pixi-spine';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {SocketService} from "../../services/socket.service";
+import {IBonus} from "./Item";
 
 export interface ICharacter {
   _id: string;
@@ -19,6 +21,7 @@ export interface ICharacter {
 export const SPAWN_PLAYER = 150;
 export const SPAWN_ENEMY = 650;
 export const DEFAULT_Y = 500;
+export const SPEED = 4;
 
 export const EquipmentParts = [
   'head',
@@ -33,6 +36,195 @@ export enum CharacterState {
   RETREAT,
   DEAD,
   WON
+}
+
+export enum CharacterMoveDirection {
+  RIGHT,
+  LEFT,
+  JUMP,
+  FALLING,
+  IDLE
+}
+
+export class CharacterChat {
+
+  id: number;
+  name: string;
+  position: Object;
+  oldPosition: Object;
+  moveState: CharacterMoveDirection;
+  faceState: CharacterMoveDirection;
+  isMoving = false;
+  isFalling = false;
+  isJumping = false;
+  socket: SocketService;
+
+  /* PIXI */
+  pApp: any;
+  ticker: any;
+  spine: any;
+
+  /* UI */
+  nameText;
+
+  constructor(pApp: any, name: string, position: Object = {x: 0, y: 0}, socket: SocketService = null) {
+    this.pApp = pApp;
+    this.name = name;
+    this.position = position;
+    this.oldPosition = {x: 0, y: 0};
+    if (socket) {
+      this.socket = socket;
+    }
+    this.moveState = CharacterMoveDirection.IDLE;
+    this.faceState = CharacterMoveDirection.IDLE;
+    this.initPixi();
+    this.nameText = new PIXI.Text(this.name, {
+      fill: '#555555',
+      font: '48px Arial',
+      wordWrap: true,
+      wordWrapWidth: 700
+    });
+    this.pApp.stage.addChild(this.nameText);
+  }
+
+  remove() {
+    this.pApp.stage.removeChild(this.nameText);
+    this.pApp.stage.removeChild(this.spine);
+  }
+
+  initPixi() {
+    this.spine = new PIXI.spine.Spine(this.pApp.loader.resources.spineboy.spineData);
+
+    this.spine.skeleton.setSkinByName('leather_armor');
+    this.spine.skeleton.setAttachment('arm_sword', 'leather');
+
+    this.spine.x = this.position['x'];
+    this.spine.y = this.pApp.screen.height;
+
+    this.spine.scale.set(0.5);
+
+    this.spine.stateData.setMix('run', 'idle', 0.2);
+    this.spine.stateData.setMix('idle', 'run', 0.2);
+
+    this.spine.stateData.setMix('jump', 'run', 0.2);
+    this.spine.stateData.setMix('run', 'jump', 0.4);
+
+    this.spine.state.setAnimation(0, 'idle', true);
+
+    this.pApp.stage.addChild(this.spine);
+
+
+    /*
+    this.pApp.stage.on('pointerdown', () => {
+
+    });
+    */
+
+
+    this.ticker = new PIXI.ticker.Ticker()
+      .add((delta) => {
+        this.update(delta);
+      })
+      .start();
+  }
+
+  setMovingDirection(state: CharacterMoveDirection) {
+
+    if (state === CharacterMoveDirection.RIGHT || state === CharacterMoveDirection.LEFT) {
+      this.isMoving = true;
+    } else {
+      this.isMoving = false;
+    }
+
+    if (state === CharacterMoveDirection.RIGHT && this.faceState !== state) {
+      this.faceState = CharacterMoveDirection.RIGHT;
+      this.flipX(true);
+    } else if (state === CharacterMoveDirection.LEFT && this.faceState !== state) {
+      this.faceState = CharacterMoveDirection.LEFT;
+      this.flipX(false);
+    }
+    if (state === CharacterMoveDirection.FALLING) {
+      this.isFalling = true;
+    }
+    this.moveState = state;
+
+    if (this.isMoving && this.getCurrentAnimationName() !== 'run' && (this.moveState === CharacterMoveDirection.RIGHT || this.moveState === CharacterMoveDirection.LEFT)) {
+      this.spine.state.setAnimation(0, 'run', true);
+    } else if (!this.isMoving && !this.isFalling) {
+      this.spine.state.setAnimation(0, 'idle', true);
+    }
+  }
+
+  update(delta) {
+
+    if (this.isJumping && this.spine.y < this.pApp.screen.height - 150) {
+      this.isFalling = true;
+      console.log('changed');
+    }
+    if (this.isFalling && this.spine.y >= this.pApp.screen.height) {
+      console.log('sent');
+      this.isFalling = false;
+      this.isJumping = false;
+      this.spine.state.clearTrack(1);
+      this.setMovingDirection(CharacterMoveDirection.IDLE);
+    }
+
+    if (this.isFalling) {
+      if (this.spine.y >= this.pApp.screen.height) {
+        this.spine.y = this.pApp.screen.height;
+        this.isFalling = false;
+        this.setMovingDirection(CharacterMoveDirection.IDLE);
+        return;
+      }
+        this.spine.y += SPEED * delta;
+    } else if (this.isJumping) {
+      this.spine.y -= SPEED / 1.5 * delta;
+    }
+
+    switch (this.moveState) {
+      case CharacterMoveDirection.RIGHT: {
+        this.spine.x += SPEED * delta;
+        break;
+      }
+      case CharacterMoveDirection.LEFT: {
+        this.spine.x -= SPEED * delta;
+        break;
+      }
+      case CharacterMoveDirection.IDLE: {
+        this.isMoving = false;
+        break;
+      }
+    }
+    this.position['x'] = this.spine.x;
+    this.position['y'] = this.spine.y;
+
+    this.nameText.x = this.spine.x - this.nameText.width / 2;
+    this.nameText.y = DEFAULT_Y - this.spine.height - 50;
+
+    if (this.socket &&
+      (this.position['x'] !== this.oldPosition['x'])) {
+      // MY CHARACTER
+      this.socket.move(this.position, this.spine.skeleton.flipX);
+      this.oldPosition['x'] = this.position['x'];
+    }
+  }
+
+  jump() {
+    if (this.isJumping || this.isFalling) {
+      return;
+    }
+    this.isJumping = true;
+    this.spine.state.setAnimation(1, 'jump', true);
+  }
+
+  flipX(value: boolean) {
+    this.spine.skeleton.flipX = value;
+  }
+  getCurrentAnimationName(index = 0) {
+    return this.spine.state.getCurrent(index).animation.name;
+  }
+
+
 }
 
 export class Character implements ICharacter {
@@ -102,16 +294,25 @@ export class Character implements ICharacter {
   static intersect(a, b) {
     const ab = a.getBounds();
     const bb = b.getBounds();
-    return ab.x + ab.width > bb.x && ab.x < bb.x + bb.width && ab.y + ab.height > bb.y && ab.y < bb.y + bb.height;
+    const myWeaponWidth = a.skeleton.slots[0].attachment ? a.skeleton.slots[0].attachment.width : 0;
+    const ennWeaponWidth = b.skeleton.slots[0].attachment ? b.skeleton.slots[0].attachment.width : 0;
+    return ab.x + ab.width - myWeaponWidth > bb.x + ennWeaponWidth
+      && ab.x + myWeaponWidth < bb.x + bb.width - ennWeaponWidth
+      && ab.y + ab.height > bb.y
+      && ab.y < bb.y + bb.height;
   }
 
-   getStr() {
+  getStr() {
     let value = this.str;
     if (this.equipped) {
       EquipmentParts.forEach((p) => {
         const part = this.equipped[p];
-        if (part && part['bonus']['STR']) {
-          value += part['bonus']['STR'];
+        if (part && part.bonus) {
+          part.bonus.forEach((b: IBonus) => {
+            if (b.stat === 'STR') {
+              value += b.value;
+            }
+          });
         }
       });
     }
@@ -123,8 +324,12 @@ export class Character implements ICharacter {
     if (this.equipped) {
       EquipmentParts.forEach((p) => {
         const part = this.equipped[p];
-        if (part && part['bonus']['STA']) {
-          value += part['bonus']['STA'];
+        if (part && part.bonus) {
+          part.bonus.forEach((b: IBonus) => {
+            if (b.stat === 'STA') {
+              value += b.value;
+            }
+          });
         }
       });
     }
@@ -136,8 +341,12 @@ export class Character implements ICharacter {
     if (this.equipped) {
       EquipmentParts.forEach((p) => {
         const part = this.equipped[p];
-        if (part && part['bonus']['CON']) {
-          value += part['bonus']['CON'];
+        if (part && part.bonus) {
+          part.bonus.forEach((b: IBonus) => {
+            if (b.stat === 'CON') {
+              value += b.value;
+            }
+          });
         }
       });
     }

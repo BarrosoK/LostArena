@@ -2,8 +2,10 @@ import {BrowserModule} from '@angular/platform-browser';
 import {MDBBootstrapModule, NavbarModule, WavesModule} from 'angular-bootstrap-md';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {LayoutModule} from '@angular/cdk/layout';
+import { JwtModule } from '@auth0/angular-jwt';
 import {
   MatToolbarModule,
   MatButtonModule,
@@ -17,7 +19,7 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import {NavbarComponent} from './navbar/navbar.component';
 import {RegisterComponent} from './register/register.component';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
 import {NotFoundComponent} from './not-found/not-found.component';
@@ -42,6 +44,14 @@ import { environment } from '../environments/environment';
 import { CombatComponent } from './combat/combat.component';
 
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
+import { ChatroomComponent } from './chatroom/chatroom.component';
+import { CharacterComponent } from './character/character.component';
+import { ShopComponent } from './shop/shop.component';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
 
@@ -57,6 +67,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     CharactersComponent,
     CreationComponent,
     CombatComponent,
+    ChatroomComponent,
+    CharacterComponent,
+    ShopComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +104,17 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     DragDropModule,
     VirtualScrollerModule,
     SocketIoModule.forRoot(config),
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:4200', 'localhost:3000', 'localhost:3002'],
+        blacklistedRoutes: ['localhost:3000/v1/users/login'],
+        headerName: 'Authorization',
+        authScheme: '',
+        skipWhenExpired: true
+      }
+    }),
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled:  environment.production })
   ],
   providers: [{

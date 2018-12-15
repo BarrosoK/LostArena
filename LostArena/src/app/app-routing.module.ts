@@ -10,13 +10,21 @@ import {LogoutComponent} from './logout/logout.component';
 import {CharactersComponent} from './characters/characters.component';
 import {CreationComponent} from './characters/creation/creation.component';
 import {CombatComponent} from './combat/combat.component';
+import {ChatroomComponent} from './chatroom/chatroom.component';
+import {CharacterComponent} from "./character/character.component";
+import {ShopComponent} from "./shop/shop.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'home', redirectTo: ''},
   {path: 'characters', component: CharactersComponent, canActivate: [AuthGuard]},
   {path: 'characters/creation', component: CreationComponent, canActivate: [AuthGuard]},
+
+  {path: 'character', component: CharacterComponent, canActivate: [AuthGuard]},
+  {path: 'shop', component: ShopComponent, canActivate: [AuthGuard]},
+  {path: 'chatroom', component: ChatroomComponent, canActivate: [AuthGuard]},
   {path: 'combat', component: CombatComponent, canActivate: [AuthGuard]},
+
   {path: 'login', component: LoginComponent, canActivate: [DcFirstGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [DcFirstGuard]},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]},

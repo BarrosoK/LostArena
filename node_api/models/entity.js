@@ -1,3 +1,4 @@
+
 var socketio = require('../socket/socket');
 import {equippmentParts} from './item.enum';
 
@@ -17,27 +18,35 @@ module.exports.Player = class {
     getStr() {
         let value = this.str;
         if (this.equipped) {
-          equippmentParts.forEach((p) => {
-            const part = this.equipped[p];
-            if (part && part['bonus']['STR']) {
-              value += part['bonus']['STR'];
-            }
-          });
+            equippmentParts.forEach((p) => {
+                const part = this.equipped[p];
+                if (part && part.bonus) {
+                    part.bonus.forEach((b) => {
+                        if (b.stat === 'STR') {
+                            value += b.value;
+                        }
+                    });
+                }
+            });
         }
         return value;
       }
 
       getSta() {
         let value = this.sta;
-        if (this.equipped) {
-          equippmentParts.forEach((p) => {
-            const part = this.equipped[p];
-            if (part && part['bonus']['STA']) {
-              value += part['bonus']['STA'];
-            }
-          });
-        }
-        return value;
+          if (this.equipped) {
+              equippmentParts.forEach((p) => {
+                  const part = this.equipped[p];
+                  if (part && part.bonus) {
+                      part.bonus.forEach((b) => {
+                          if (b.stat === 'STA') {
+                              value += b.value;
+                          }
+                      });
+                  }
+              });
+          }
+          return value;
       }
     
     

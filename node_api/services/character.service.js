@@ -29,7 +29,7 @@ const addItemToCharacter = async function(characterId, itemId) {
         let rawdata = fs.readFileSync('./models/items/items.json');  
         let itemRef = JSON.parse(rawdata)[itemId];  
         itemRef.character_id = characterId;
-        let b = {};
+        let b = [];
 
 
         if (itemRef.type == ItemType.EQUIPMENT) {
@@ -42,7 +42,7 @@ const addItemToCharacter = async function(characterId, itemId) {
                 num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
                 value =  value * (1 + (num / 100));
             }
-            b[stat] = value;
+            b.push({stat: stat, value: value});
         }); 
         itemRef.bonus = b;
     } else {
@@ -57,7 +57,7 @@ const addItemToCharacter = async function(characterId, itemId) {
 module.exports.addItemToCharacter = addItemToCharacter;
 
 const createCharacter = async function(characterInfo, user){
-    let unique_key, auth_info, err;
+    let unique_key, auth_info, err, character;
 
     auth_info = {};
     auth_info.status = 'create';

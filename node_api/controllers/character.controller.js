@@ -4,10 +4,8 @@ const { to, ReE, ReS } = require('../services/util.service');
 
 
 const isMyChar = function(req, charId) {
-    character_id = charId;
-
-    character = req.user.characters.filter((char) => {
-        return char._id.toString() === character_id;
+    let character = req.user.characters.filter((char) => {
+        return char._id.toString() === charId;
     });
 
     if (character.length <= 0) {
@@ -26,12 +24,12 @@ const create = async function(req, res){
     if (!body.name) {
         return ReE(res, 'Pleaser en a name to register.');
     } else {
-        let err, character;
+        let err, item;
 
-        [err, character] = await to (characterService.createCharacter(body, req.user));
+        [err, item] = await to (characterService.createCharacter(body, req.user));
 
         if (err) return ReE(res, err, 422);
-        return ReS(res, {message:'Successfully created a new character', character: character.toWeb()});
+        return ReS(res, {message:'Successfully bought a item !', item: item.toWeb()});
     }
 };
 module.exports.create = create;
@@ -87,23 +85,35 @@ const remove = async function(req, res){
 };
 module.exports.remove = remove;
 
+export const getItem = async (req, res) => {
+    let items, err;
+
+    [err, items] = await to(Item.find({character_id: req.params.id}));
+    return ReS(res, {items:items});
+
+};
+
 /* POST */
+/*
+ *  itemId: id of the item to add
+ *  characterId: id of the character to add the item
+ */
 const addItem = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
     const body = req.body;
     if (!body.itemId) {
         return ReE(res, 'Pleaser enter a item id');
     } else {
-        let err, character;
+        let err, item;
 
         if (!isMyChar(req, body.characterId)) {
             return ReE(res, {message: 'Not authorized'});
         }
 
-        [err, character] = await to (characterService.addItemToCharacter(body.characterId, body.itemId));
+        [err, item] = await to (characterService.addItemToCharacter(body.characterId, body.itemId));
 
         if (err) return ReE(res, err, 422);
-        return ReS(res, {message:'Successfully created a new character', character: character.toJSON()});
+        return ReS(res, {message:'Successfully created a new character', item: item.toJSON()});
     }
 }
 module.exports.addItem = addItem;

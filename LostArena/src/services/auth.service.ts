@@ -36,7 +36,7 @@ export class AuthService {
 
   register(account) {
     account.password = account.passwords.password;
-    this.http.post(environment.api.register, account, JWTInterceptor.createHeader()).subscribe((res) => {
+    this.http.post(environment.api.register, account).subscribe((res) => {
       console.log(res);
       if (res && res['success']) {
         this.openSnackBar('Account created ! ', 'Login', 4000);
@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   login(creditentials) {
-    this.http.post(environment.api.login, creditentials, JWTInterceptor.createHeader()).subscribe(async (res) => {
+    this.http.post(environment.api.login, creditentials).subscribe(async (res) => {
       console.log(res);
       if (res['success']) {
         localStorage.setItem('token', res['token']);
@@ -95,7 +95,7 @@ export class AuthService {
       // RETRIVE SESSION FROM LOCALSTORAGE
       const token = localStorage.getItem('token');
       this.store.dispatch(new SetToken(token));
-      http.get(environment.api.profile, JWTInterceptor.createHeader()).subscribe((res) => {
+      http.get(environment.api.profile).subscribe((res) => {
         this.store.dispatch(new SetUser(res['user']));
         this.socket.login(res['user']);
         this.characterService.getMyCharacters().subscribe((characters: Character[]) => {

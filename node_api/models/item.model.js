@@ -8,6 +8,7 @@ let ItemSchema = mongoose.Schema({
     type: Number,
     part: String,
     name: String,
+    img: String,
     bonus: {}
 }, {toJSON: {virtuals: true}});
 

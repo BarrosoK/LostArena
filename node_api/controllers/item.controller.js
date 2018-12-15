@@ -1,6 +1,7 @@
 const { Item } = require('../models');
 const characterService = require('../services/character.service');
 const { to, ReE, ReS } = require('../services/util.service');
+const fs = require('fs');
 
 /* POST */
 const create = async function(req, res){
@@ -19,3 +20,10 @@ const create = async function(req, res){
     }
 };
 module.exports.create = create;
+
+/* GET */
+export const get = async function(req, res){
+    let rawdata = fs.readFileSync('./models/items/items.json');
+    let items = JSON.parse(rawdata);
+    return ReS(res, {items: items});
+};

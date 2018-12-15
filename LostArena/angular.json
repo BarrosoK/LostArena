@@ -28,7 +28,6 @@
               "src/manifest.json"
             ],
             "styles": [
-              "node_modules/@a.grisevich/ng-zorro-antd/src/ng-zorro-antd.min.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/font-awesome/scss/font-awesome.scss",
               "node_modules/angular-bootstrap-md/scss/bootstrap/bootstrap.scss",

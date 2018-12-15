@@ -1,8 +1,8 @@
-import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {Store} from "@ngxs/store";
-import {Injectable} from "@angular/core";
-import {UserState} from "../app/stores/states/user.state";
+import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Store} from '@ngxs/store';
+import {Injectable} from '@angular/core';
+import {UserState} from '../app/stores/states/user.state';
 
 @Injectable()
 export class JWTInterceptor implements HttpInterceptor {
@@ -17,7 +17,7 @@ export class JWTInterceptor implements HttpInterceptor {
         'Content-Type':  options.content,
       });
     if (options.bearer) {
-      headers = headers.set('Authorization', 'true');
+      headers = headers.set('Authorization', 'fff');
     }
     return {headers: headers};
   }
