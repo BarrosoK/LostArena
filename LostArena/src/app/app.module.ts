@@ -48,7 +48,9 @@ import { ChatroomComponent } from './chatroom/chatroom.component';
 import { CharacterComponent } from './character/character.component';
 import { ShopComponent } from './shop/shop.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-
+import { AdminComponent } from './admin/admin.component';
+import {FileDropModule} from "ngx-file-drop";
+import {MatExpansionModule} from '@angular/material/expansion';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -70,6 +72,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     ChatroomComponent,
     CharacterComponent,
     ShopComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,6 +98,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    MatExpansionModule,
     NgxsModule.forRoot([
       UserState,
       SocketState
@@ -115,6 +119,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
         skipWhenExpired: true
       }
     }),
+    FileDropModule,
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled:  environment.production })
   ],
   providers: [{

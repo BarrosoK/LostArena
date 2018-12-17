@@ -34,17 +34,19 @@ module.exports = {
                     return;
                 }
                 const user_id = socket.handshake.session.user._id;
-                if (!chatroom.get(user_id)) {
+                if (!chatroom.has(user_id)) {
                     return;
                 }
                 const name = chatroom.get(user_id).name;
-                chatroom.delete(chatroom.get(user_id));
                 socket.broadcast.emit('chatroom leave', name);
+                chatroom.delete(user_id);
                 module.exports.onDisconnect()
             });
             socket.on('chatroom move', (position) => module.exports.onChatRoomMove(socket, position));
             socket.on('chatroom leave', () => module.exports.onChatRoomLeave(socket));
             socket.on('chatroom join', (character) => module.exports.onChatRoomJoin(socket, character));
+            socket.on('chatroom state', (state) => module.exports.onChatState(socket, state));
+            socket.on('chatroom chat', (chat) => module.exports.onChatRoomChat(io, socket, chat));
             socket.on("login", function (user) {
                 socket.handshake.session.user = user;
                 socket.handshake.session.save();
@@ -57,20 +59,58 @@ module.exports = {
 
 
     },
+    onChatRoomChat: (io, socket, {type, text}) => {
+        if (!socket.handshake.session.user) {
+            return;
+        }
+        const user_id = socket.handshake.session.user._id;
+        const character = chatroom.get(user_id);
+        if (!character) {
+            return;
+        }
+        io.emit('chatroom chat', {id: character.name, type: type, text: text});
+    },
+    onChatState: (socket, {state, loop, index}) => {
+        if (!socket.handshake.session.user) {
+            return;
+        }
+        const user_id = socket.handshake.session.user._id;
+        const character = chatroom.get(user_id);
+        if (!character) {
+            return;
+        }
+        socket.broadcast.emit('chatroom state', {id: character.name, state: state, loop: loop, index: index});
+    },
     onChatRoomMove: (socket, {position, face}) => {
+        if (!socket.handshake.session.user) {
+            return;
+        }
         const user_id = socket.handshake.session.user._id;
         const character = chatroom.get(user_id);
         character.position = position;
         socket.broadcast.emit('chatroom move', {id: character.name, position: position, face: face});
     },
     onChatRoomJoin: (socket, character) => {
+        if (!chatroom.has(socket.handshake.session.user._id)) {
+            socket.broadcast.emit('chatroom join', character);
+        }
         socket.emit('chatroom list', chatroom);
         chatroom.set(socket.handshake.session.user._id, character);
-        socket.broadcast.emit('chatroom join', character);
     },
     onChatRoomLeave: (socket) => {
-        chatroom.delete(socket.handshake.session.user._id);
-        socket.broadcast.emit('chatroom leave', character.id);
+        if (!socket.handshake.session.user) {
+            console.log('HANDSHAKE NOT GFOUDN');
+            return;
+        }
+        const user_id = socket.handshake.session.user._id;
+        const character = chatroom.get(user_id);
+        if (character && character.id) {
+            socket.broadcast.emit('chatroom leave', character.id);
+            console.log('character left !');
+            chatroom.delete(socket.handshake.session.user._id);
+        } else {
+            console.log('[CHATROOM] CHARACTER NOT FOUND');
+        }
     },
     onConnect: (socket) => {
         // socket.sendSystemMessage('Welcome 1');

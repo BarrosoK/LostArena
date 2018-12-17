@@ -1,4 +1,4 @@
-import {CharacterChat} from "../../models/Character";
+import {CharacterChat} from '../../models/Character';
 
 export class AddMessageSystem {
   static readonly type = '[Socket] AddMessageSystem';
@@ -20,6 +20,11 @@ export class RemoveMessageCombat {
   constructor(public id: string) {}
 }
 
+export class AddChatRoomMessage {
+  static readonly type = '[Socket] AddChatRoomMessage';
+  constructor(public id: string, public type: string, public text: string) {}
+}
+
 export class AddChatRoom {
   static readonly type = '[Socket] AddChatRoom';
   constructor(public payload: CharacterChat) {}
@@ -28,4 +33,9 @@ export class AddChatRoom {
 export class RemoveChatRoom {
   static readonly type = '[Socket] RemoveChatRoom';
   constructor(public payload) {}
+}
+
+export class ClearChatRoom {
+  static readonly type = '[Socket] ClearChatRoom';
+  constructor() {}
 }

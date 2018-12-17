@@ -37,7 +37,6 @@ export class AuthService {
   register(account) {
     account.password = account.passwords.password;
     this.http.post(environment.api.register, account).subscribe((res) => {
-      console.log(res);
       if (res && res['success']) {
         this.openSnackBar('Account created ! ', 'Login', 4000);
       }

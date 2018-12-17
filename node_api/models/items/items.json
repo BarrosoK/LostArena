@@ -28,5 +28,23 @@
                 "default": 14
             }
         ]
+    },
+    {
+        "id": 2,
+        "type": 1,
+        "part": "chest",
+        "name": "gilet jaune",
+        "img": "pasencore",
+        "bonus": [
+            {
+                "stat": "STA",
+                "default": 5
+            },
+            {
+                "stat": "PDEF",
+                "default": 100,
+                "variance": 25
+            }
+        ]
     }
 ]

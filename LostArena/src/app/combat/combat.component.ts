@@ -134,7 +134,8 @@ export class CombatComponent implements OnInit, OnDestroy {
   }
 
   changeWeapon(sword: string) {
-    this.player.setAttachment('arm_sword', sword);
+    this.player.changeSkin(sword);
+    // this.player.setAttachment('body', sword);
   }
 
   async fight(target: Character) {

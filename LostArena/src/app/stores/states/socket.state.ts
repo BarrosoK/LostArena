@@ -1,8 +1,8 @@
 import {Action, Select, Selector, State, StateContext} from '@ngxs/store';
 import {
-  AddChatRoom,
+  AddChatRoom, AddChatRoomMessage,
   AddMessageCombat,
-  AddMessageSystem, RemoveChatRoom,
+  AddMessageSystem, ClearChatRoom, RemoveChatRoom,
   RemoveMessageCombat,
   RemoveMessageSystem
 } from '../actions/socket.actions';
@@ -13,6 +13,7 @@ export interface SocketStateModel {
   sysMessages: string[];
   cmbMessages: string[];
   chatRoom: CharacterChat[];
+  chatRoomMessage: Object[];
 }​
 
 @State<SocketStateModel>({
@@ -20,7 +21,8 @@ export interface SocketStateModel {
   defaults: {
     sysMessages: [],
     cmbMessages: [],
-    chatRoom: []
+    chatRoom: [],
+    chatRoomMessage: [],
   }
 })
 export class SocketState {
@@ -37,8 +39,29 @@ export class SocketState {
   }
 
   @Selector()
+  static chatRoomMessages(state: SocketStateModel) {
+    return state.chatRoomMessage;
+  }
+
+  @Selector()
   static chatRoom(state: SocketStateModel) {
     return state.chatRoom;
+  }
+
+  @Action(AddChatRoomMessage)
+  addChatRoomMessage({getState, patchState}: StateContext<SocketStateModel>, {id, type, text}: AddChatRoomMessage) {
+    const state = getState();
+    patchState({
+      chatRoomMessage: [{id: id, type: type, text: text}, ...state.chatRoomMessage]
+    });
+  }
+
+  @Action(ClearChatRoom)
+  clearChatRoom({getState, patchState}: StateContext<SocketStateModel>) {
+    const state = getState();
+    patchState({
+      chatRoom: []
+    });
   }
 
   @Action(RemoveMessageSystem)

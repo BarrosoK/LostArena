@@ -1,4 +1,5 @@
 export const equippmentParts = [
     'head',
-    'weapon'
+    'weapon',
+    'chest'
 ]

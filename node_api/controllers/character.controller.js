@@ -1,3 +1,5 @@
+import {equippmentParts} from "../models/item.enum";
+
 const { Character, Item } = require('../models');
 const characterService = require('../services/character.service');
 const { to, ReE, ReS } = require('../services/util.service');
@@ -130,22 +132,21 @@ const equipItem = async function(req, res){
         return ReE(res, {message: 'Not authorized'});
     }
 
-    
+
     [err, item] = await to(Item.findOne({_id: itemId}));
     if (err) {
         return ReE(res, err);
     }
+    const path = 'equipped.' + item['part'];
     [err, result] = await to(Character.updateOne({_id:charId}, {
         $set: {
-            equipped: {
-                [item['part']]: item
-            }
+            [path]: item
         }
     }));
     if(err){
         return ReE(res, err);
     }
     let char = await Character.findOne({_id: charId});
-    return ReS(res, {item: char});
-}
+    return ReS(res, {character: char});
+};
 module.exports.equipItem = equipItem;

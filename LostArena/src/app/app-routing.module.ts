@@ -13,6 +13,7 @@ import {CombatComponent} from './combat/combat.component';
 import {ChatroomComponent} from './chatroom/chatroom.component';
 import {CharacterComponent} from "./character/character.component";
 import {ShopComponent} from "./shop/shop.component";
+import {AdminComponent} from "./admin/admin.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -28,6 +29,9 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent, canActivate: [DcFirstGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [DcFirstGuard]},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]},
+
+  {path: 'admin', component: AdminComponent},
+
   {path: '**', component: NotFoundComponent}
 ];
 

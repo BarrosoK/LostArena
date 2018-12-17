@@ -3,8 +3,12 @@ import {Store} from '@ngxs/store';
 declare var PIXI: any;
 import 'pixi-spine';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
-import {SocketService} from "../../services/socket.service";
-import {IBonus} from "./Item";
+import {SocketService} from '../../services/socket.service';
+import {IBonus} from './Item';
+// @ts-ignore
+import Container = PIXI.Container;
+// @ts-ignore
+import Graphics = PIXI.Graphics;
 
 export interface ICharacter {
   _id: string;
@@ -18,14 +22,27 @@ export interface ICharacter {
   equipped: Object;
 }
 
-export const SPAWN_PLAYER = 150;
-export const SPAWN_ENEMY = 650;
+/* GAME CONFIG */
 export const DEFAULT_Y = 500;
-export const SPEED = 4;
+export const SPAWN_PLAYER = 200;
+export const SPAWN_ENEMY = 600;
+
+/* SPEED CONFIG */
+export const TIME_SCALE = 1.80; // ANIAMTION SPEED
+export const FIGHT_SPEED = 8; // COMBAT SPEED
+export const SPEED = 4; // CHATROOM SPEED
+
+/* UI CONFIG */
+export const NAME_UP = false;
+export const PROGRESSBAR_OFFSET = 0;
+export const PROGRESSBAR_HEALTH_WIDTH = 300;
+export const PROGRESSBAR_HEALTH_HEIGHT = 30;
+export const PROGRESSBAR_BORDER = 3.5;
 
 export const EquipmentParts = [
   'head',
-  'weapon'
+  'weapon',
+  'chest'
 ];
 
 
@@ -63,28 +80,46 @@ export class CharacterChat {
   pApp: any;
   ticker: any;
   spine: any;
+  date: number;
 
   /* UI */
   nameText;
+  chatText;
+  toDelete;
 
   constructor(pApp: any, name: string, position: Object = {x: 0, y: 0}, socket: SocketService = null) {
     this.pApp = pApp;
     this.name = name;
     this.position = position;
     this.oldPosition = {x: 0, y: 0};
+    this.date = Date.now();
     if (socket) {
       this.socket = socket;
     }
     this.moveState = CharacterMoveDirection.IDLE;
     this.faceState = CharacterMoveDirection.IDLE;
     this.initPixi();
-    this.nameText = new PIXI.Text(this.name, {
+    this.nameText = new PIXI.Text('', {
       fill: '#555555',
       font: '48px Arial',
       wordWrap: true,
       wordWrapWidth: 700
     });
     this.pApp.stage.addChild(this.nameText);
+    this.chatText =  new PIXI.Text('', {
+      fill: '#555555',
+      font: '48px Arial',
+      wordWrap: true,
+      wordWrapWidth: 700
+    });
+  }
+
+  addChat(text) {
+    this.chatText.text = text;
+    this.chatText.x = this.spine.x;
+    this.chatText.y = this.spine.y - this.spine.height - 50;
+    this.pApp.stage.addChild(this.chatText);
+    this.toDelete = Date.now() + 5000;
   }
 
   remove() {
@@ -110,7 +145,6 @@ export class CharacterChat {
     this.spine.stateData.setMix('run', 'jump', 0.4);
 
     this.spine.state.setAnimation(0, 'idle', true);
-
     this.pApp.stage.addChild(this.spine);
 
 
@@ -124,6 +158,7 @@ export class CharacterChat {
     this.ticker = new PIXI.ticker.Ticker()
       .add((delta) => {
         this.update(delta);
+        this.updateUi(delta);
       })
       .start();
   }
@@ -150,8 +185,23 @@ export class CharacterChat {
 
     if (this.isMoving && this.getCurrentAnimationName() !== 'run' && (this.moveState === CharacterMoveDirection.RIGHT || this.moveState === CharacterMoveDirection.LEFT)) {
       this.spine.state.setAnimation(0, 'run', true);
+      this.socket.sendState('run');
     } else if (!this.isMoving && !this.isFalling) {
       this.spine.state.setAnimation(0, 'idle', true);
+      this.socket.sendState('idle');
+    }
+  }
+
+  updateUi(delta) {
+    this.nameText.text = this.name;
+    this.nameText.x = this.spine.x - (this.nameText.width / 2);
+    this.nameText.y = this.spine.y - this.spine.height -  50;
+    if (this.chatText.text.length > 0) {
+      this.chatText.x = this.spine.x - (this.chatText.width / 2);
+      this.chatText.y = this.spine.y - this.spine.height - 100;
+      if (Date.now() > this.toDelete){
+        this.pApp.stage.removeChild(this.chatText);
+      }
     }
   }
 
@@ -162,7 +212,6 @@ export class CharacterChat {
       console.log('changed');
     }
     if (this.isFalling && this.spine.y >= this.pApp.screen.height) {
-      console.log('sent');
       this.isFalling = false;
       this.isJumping = false;
       this.spine.state.clearTrack(1);
@@ -173,6 +222,8 @@ export class CharacterChat {
       if (this.spine.y >= this.pApp.screen.height) {
         this.spine.y = this.pApp.screen.height;
         this.isFalling = false;
+        this.socket.sendState('idle');
+        this.spine.state.clearTrack(1);
         this.setMovingDirection(CharacterMoveDirection.IDLE);
         return;
       }
@@ -201,11 +252,15 @@ export class CharacterChat {
     this.nameText.x = this.spine.x - this.nameText.width / 2;
     this.nameText.y = DEFAULT_Y - this.spine.height - 50;
 
-    if (this.socket &&
-      (this.position['x'] !== this.oldPosition['x'])) {
+    if (this.socket && (this.isMoving || this.isJumping || this.isFalling) &&
+      (this.position['x'] !== this.oldPosition['x'] || this.position['y'] !== this.oldPosition['y'])) {
       // MY CHARACTER
       this.socket.move(this.position, this.spine.skeleton.flipX);
       this.oldPosition['x'] = this.position['x'];
+    }
+    if (this.socket && !this.isMoving && Date.now() > this.date + 5000) {
+      this.date = Date.now();
+      this.socket.sendState('idle');
     }
   }
 
@@ -215,6 +270,7 @@ export class CharacterChat {
     }
     this.isJumping = true;
     this.spine.state.setAnimation(1, 'jump', true);
+    this.socket.sendState('jump', true, 0);
   }
 
   flipX(value: boolean) {
@@ -248,6 +304,66 @@ export class Character implements ICharacter {
       wordWrapWidth: 700
     });
     this.pApp.stage.addChild(this.healthText);
+
+    // Create health percentage text
+    this.nameText = new PIXI.Text('', {
+      fill: [
+        '#4163ec',
+        '#5267bb',
+        '#08195f'
+      ],
+      fontFamily: 'Arial Black',
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      strokeThickness: 1
+    });
+
+
+
+    // Create health percentage text
+    this.healthPbPercent = new PIXI.Text('100%', {
+      fill: [
+        '#63e882',
+        '#41a746',
+        '#137c28'
+      ],
+      fontFamily: 'Arial Black',
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      strokeThickness: 1
+    });
+
+    // Create the health bar
+    this.healthPb = new Container();
+    this.healthPb.position.set(x === SPAWN_PLAYER ?
+      PROGRESSBAR_BORDER / 2 :
+      this.pApp.screen.width - PROGRESSBAR_HEALTH_WIDTH - PROGRESSBAR_BORDER / 2, NAME_UP ? 40 : PROGRESSBAR_OFFSET);
+    this.pApp.stage.addChild(this.healthPb);
+    // Create the black background rectangle
+    const innerBar = new Graphics();
+    innerBar.beginFill(0x000000);
+    innerBar.lineStyle(PROGRESSBAR_BORDER, 0x137c28, 1);
+    innerBar.drawRect(0, 0, PROGRESSBAR_HEALTH_WIDTH, PROGRESSBAR_HEALTH_HEIGHT);
+    innerBar.endFill();
+    this.healthPb.addChild(innerBar);
+
+    // Create the front red rectangle
+    const outerBar = new Graphics();
+    outerBar.beginFill(0xFF3300, 0.7);
+    outerBar.drawRect(PROGRESSBAR_BORDER / 2, PROGRESSBAR_BORDER / 2, PROGRESSBAR_HEALTH_WIDTH, PROGRESSBAR_HEALTH_HEIGHT - (PROGRESSBAR_BORDER));
+    outerBar.endFill();
+
+    this.healthPb.addChild(outerBar);
+
+    this.healthPbPercent.y = (PROGRESSBAR_HEALTH_HEIGHT / 2) - (this.healthPbPercent.height / 2);
+    this.healthPb.addChild(this.healthPbPercent);
+
+    this.nameText.x = x === SPAWN_PLAYER ? PROGRESSBAR_HEALTH_WIDTH - this.nameText.width : 0;
+    this.nameText.y = NAME_UP ? -PROGRESSBAR_HEALTH_HEIGHT : PROGRESSBAR_HEALTH_HEIGHT;
+
+    this.healthPb.addChild(this.nameText);
+
+    this.healthPb.outer = outerBar;
     this.onAssetsLoaded();
   }
 
@@ -287,9 +403,13 @@ export class Character implements ICharacter {
   dirty = false;
   delta: number;
   inFight: BehaviorSubject<boolean>;
+  uiText = [];
 
   /* UI */
   healthText;
+  healthPb;
+  healthPbPercent;
+  nameText;
 
   static intersect(a, b) {
     const ab = a.getBounds();
@@ -364,6 +484,10 @@ export class Character implements ICharacter {
     this.level = c.level;
   }
 
+  changeSkin(skin) {
+    this.spine.skeleton.setSkinByName(skin);
+  }
+
   setFightStatus(newValue: boolean): void {
     this.inFight.next(newValue);
   }
@@ -420,14 +544,20 @@ export class Character implements ICharacter {
         }
         this.checkCollisions();
         this.setAnimation();
+        this.handleUi(delta);
         this.update(delta);
       })
       .start();
+
+    this.spine.state.timeScale = TIME_SCALE;
+
   }
 
   reset() {
     this.currentHealth = this.maximumHealth;
     this.state = CharacterState.IDLE;
+    this.nameText.text = this.name;
+    this.nameText.x = this.x === SPAWN_PLAYER ? PROGRESSBAR_HEALTH_WIDTH - this.nameText.width : 0;
   }
 
   flipX(value: boolean) {
@@ -455,7 +585,7 @@ export class Character implements ICharacter {
         if (this.spine.state.getCurrent(0).animation.name === 'run') {
           return;
         }
-        if (this.getCurrentAnimationName() === 'attack_01') {
+        if (this.getCurrentAnimationName().includes('attack_')) {
           this.spine.state.addAnimation(0, 'run', true);
         } else {
           this.spine.state.setAnimation(0, 'run', true);
@@ -508,7 +638,7 @@ export class Character implements ICharacter {
   }
 
   setAttachment(slotName: string, attachmentName: string) {
-    this.spine.skeleton.setAttachment(slotName, attachmentName);
+    this.spine.skeleton.setSkin(slotName, attachmentName);
   }
 
   startFight(target: Character) {
@@ -544,14 +674,34 @@ export class Character implements ICharacter {
 
   onAttack() {
     this.state = CharacterState.ATTACK;
-    const wait = this.spine.state.setAnimation(0, 'attack_01', false).animationEnd * 1000;
+    const wait = this.spine.state.setAnimation(0, 'attack_0' + (Math.floor(Math.random() * (3) + 1)), false).animationEnd * 1000;
+
     setTimeout(() => {
       // OnComplete broken as fck
       this.flipX(!this.spine.skeleton.flipX);
       this.target.currentHealth -= +this.queue[0]['attack']['damages'];
       console.log(this.queue[0]);
-      this.queue.shift();
-      this.target.queue.shift();
+      const d = new PIXI.Text(this.queue[0]['attack']['damages'], {
+        'fontSize': 35,
+        'dropShadow': true,
+        'dropShadowAlpha': 0.4,
+        'dropShadowAngle': 1,
+        'dropShadowDistance': 4,
+        'fill': [
+          '#da4646',
+          '#950909'
+        ],
+        'fontFamily': 'Arial Black',
+        'fontStyle': 'italic',
+        'fontWeight': 'bold',
+        'strokeThickness': 1
+      });
+      d.direction = (Math.floor(Math.random() * 2) + 1);
+      d.default = this.target.spine.x;
+      d.x = this.target.spine.x;
+      d.y = this.target.spine.y - this.target.spine.height;
+      this.uiText.push(d);
+      this.pApp.stage.addChild(d);
       this.state = CharacterState.RETREAT;
       this.spine.state.addAnimation(0, 'run', true);
       if (this.target.currentHealth <= 0) {
@@ -561,7 +711,9 @@ export class Character implements ICharacter {
       } else {
         this.target.hit();
       }
-    }, wait);
+      this.queue.shift();
+      this.target.queue.shift();
+    }, wait / TIME_SCALE);
   }
 
   end() {
@@ -583,6 +735,24 @@ export class Character implements ICharacter {
     this.spine.state.setAnimation(0, 'dying', false);
   }
 
+  handleUi(delta) {
+    let p = (this.currentHealth / this.maximumHealth  * PROGRESSBAR_HEALTH_WIDTH) - PROGRESSBAR_BORDER;
+    if (p < 0) {
+      p = 0;
+    }
+    this.healthPb.outer.width = p;
+    this.healthPbPercent.text = Math.floor(this.currentHealth / this.maximumHealth * 100) + '%';
+    this.healthPbPercent.x = (PROGRESSBAR_HEALTH_WIDTH / 2) - (this.healthPbPercent.width / 2);
+    this.uiText.forEach((text) => {
+      text.y -= 3 * delta;
+      const s = ( (text.direction === 1 ? 1 : -1) * 25) * Math.sin(text.y / 60) + text.default;
+      text.x = s;
+      if (text.y <= 0) {
+        this.pApp.stage.removeChild(text);
+      }
+    });
+  }
+
   update(delta) {
 
     if (this.currentHealth <= 0) {
@@ -593,6 +763,8 @@ export class Character implements ICharacter {
     this.healthText.text = Math.floor(this.currentHealth) + '/' + this.maximumHealth;
     this.healthText.x = this.spine.x - this.healthText.width / 2;
     this.healthText.y = DEFAULT_Y - this.spine.height - 50;
+
+    // console.log(this.currentHealth / this.maximumHealth * 100);
 
     if (!this.target || !this.ready) {
       return;
@@ -606,17 +778,17 @@ export class Character implements ICharacter {
     switch (this.state) {
       case CharacterState.RUN: {
         if (this.spine.x < this.target.x) {
-          this.spine.x += 4 * delta;
+          this.spine.x += FIGHT_SPEED * delta;
         } else {
-          this.spine.x -= 4 * delta;
+          this.spine.x -= FIGHT_SPEED * delta;
         }
         break;
       }
       case CharacterState.RETREAT: {
-        if (this.getCurrentAnimationName() === 'attack_01') {
+        if (this.getCurrentAnimationName().includes('attack_')) {
           return;
         }
-        if (this.attacked && (this.spine.x <= (0 + 150) || this.spine.x >= (this.pApp.screen.width - 150))) {
+        if (this.attacked && (this.spine.x <= SPAWN_PLAYER || this.spine.x >= (SPAWN_ENEMY))) {
           this.state = CharacterState.IDLE;
           this.ready = false;
           if (this.queue.length === 0) {
@@ -632,9 +804,9 @@ export class Character implements ICharacter {
           return;
         }
         if (this.spine.x < this.target.x) {
-          this.spine.x -= 4 * delta;
+          this.spine.x -= FIGHT_SPEED * delta;
         } else {
-          this.spine.x += 4 * delta;
+          this.spine.x += FIGHT_SPEED * delta;
         }
         break;
       }

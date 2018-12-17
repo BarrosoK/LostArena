@@ -76,10 +76,27 @@ export class SocketService {
 
   chatRoomLeave() {
     this.socket.emit('chatroom leave', '');
+    console.log('emited');
   }
 
   onChatRoomMove() {
     return this.socket.fromEvent('chatroom move');
+  }
+
+  onChatRoomState() {
+    return this.socket.fromEvent('chatroom state');
+  }
+
+  onChatRoomChat() {
+    return this.socket.fromEvent('chatroom chat');
+  }
+
+  sendChat(text) {
+    this.socket.emit('chatroom chat', {type: 'general', text: text});
+  }
+
+  sendState(state, loop = true, index = 0) {
+    this.socket.emit('chatroom state', {state: state, loop: loop, index: index});
   }
 
   move(position: any, face: boolean) {

@@ -13,6 +13,7 @@ let CharacterSchema = mongoose.Schema({
     equipped: {
         weapon: {type: mongoose.Schema.ObjectId, ref: 'Item'},
         head: {type: mongoose.Schema.ObjectId, ref: 'Item'},
+        chest: {type: mongoose.Schema.ObjectId, ref: 'Item'},
     }
 },  {toJSON: {virtuals: true}});
 
