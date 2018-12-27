@@ -12,6 +12,46 @@ torso
   offset: 0, 0
   index: -1
 
+items.png
+size: 320,320
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+sword_01
+    rotate: true
+    xy: 0, 0
+    size: 32, 32
+    orig: 32, 32
+    offset: 0, 0
+    index: -1
+
+
+axe.png
+size: 500,383
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+axe
+        rotate: false
+        xy: 0, 0
+        size: 383, 500
+        orig: 383, 500
+        offset: 0, 0
+        index: -1
+
+spear.png
+size: 1287,457
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+spear
+        rotate: false
+        xy: 0, 0
+        size: 1287, 457
+        orig: 1287, 457
+        offset: 0, 0
+        index: -1
+
 warrior.png
 size: 1024,1024
 format: RGBA8888

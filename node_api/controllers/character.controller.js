@@ -1,5 +1,3 @@
-import {equippmentParts} from "../models/item.enum";
-
 const { Character, Item } = require('../models');
 const characterService = require('../services/character.service');
 const { to, ReE, ReS } = require('../services/util.service');
@@ -103,7 +101,8 @@ export const getItem = async (req, res) => {
 const addItem = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
     const body = req.body;
-    if (!body.itemId) {
+    console.log(body);
+    if (!Object.keys('itemId')) {
         return ReE(res, 'Pleaser enter a item id');
     } else {
         let err, item;

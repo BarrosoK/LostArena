@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('./user.model');
 import {equippmentParts} from './item.enum';
+const { to } = require('../services/util.service');
 
 let CharacterSchema = mongoose.Schema({
     name: {type:String, index: true, unique: true},
@@ -10,6 +11,7 @@ let CharacterSchema = mongoose.Schema({
     con: Number,
     dex: Number,
     str: Number,
+    exp: Number,
     equipped: {
         weapon: {type: mongoose.Schema.ObjectId, ref: 'Item'},
         head: {type: mongoose.Schema.ObjectId, ref: 'Item'},
@@ -45,7 +47,16 @@ CharacterSchema.pre('find', function() {
     });
 });
 
-CharacterSchema.methods.fight = function(target) {
-    console.log('bonjour');
+CharacterSchema.methods.update = async function(character){
+    let err, result;
+    [err, result] = await to(Character.updateOne({_id:character._id},
+        {
+            $set: {
+                exp: character.exp
+            }
+        }));
+    const c =  await to(Character.findOne({_id:character._id}));
+    console.log(result, c);
+    return c;
 };
 let Character = module.exports = mongoose.model('Character', CharacterSchema);

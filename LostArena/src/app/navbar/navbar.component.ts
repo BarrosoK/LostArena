@@ -7,7 +7,7 @@ import {AuthService} from "../../services/auth.service";
 import {SocketService} from "../../services/socket.service";
 import {UserState, UserStateModel} from "../stores/states/user.state";
 import {Store} from "@ngxs/store";
-import {RemoveMessageSystem} from "../stores/actions/socket.actions";
+import {RemoveMessageCombat, RemoveMessageSystem} from "../stores/actions/socket.actions";
 import {SocketState} from "../stores/states/socket.state";
 import {ICharacter} from "../models/Character";
 
@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit {
   }
 
   remove(index) {
-    this.store.dispatch(new RemoveMessageSystem(index));
+    this.store.dispatch(new RemoveMessageCombat(index));
   }
 
   constructor(private breakpointObserver: BreakpointObserver, public authService: AuthService,

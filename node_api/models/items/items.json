@@ -1,22 +1,30 @@
 [
     {
-        "id": 0,
-        "type": 0,
-        "name": "wooden stick",
-        "img": "icon-144x144.png",
-        "bonus": [
-            {
-                "STR": 14,
-                "variance": 5
-            }
-        ]
+      "id": 0,
+      "type": 1,
+      "part": "weapon",
+      "name": "spear",
+      "icon": "../spine/warrior/spear.png",
+      "img": "spear",
+      "bonus": [
+        {
+          "stat": "STR",
+          "default": 20,
+          "variance": 10
+        },
+        {
+          "stat": "CON",
+          "default": 14
+        }
+      ]
     },
     {
         "id": 1,
         "type": 1,
         "part": "weapon",
-        "name": "wooden stick",
-        "img": "icon-144x144.png",
+        "name": "axe",
+        "icon": "../spine/warrior/axe.png",
+        "img": "axe",
         "bonus": [
             {
                 "stat": "STR",

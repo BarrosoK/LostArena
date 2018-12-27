@@ -60,7 +60,8 @@ export class SocketState {
   clearChatRoom({getState, patchState}: StateContext<SocketStateModel>) {
     const state = getState();
     patchState({
-      chatRoom: []
+      chatRoom: [],
+      chatRoomMessage: []
     });
   }
 

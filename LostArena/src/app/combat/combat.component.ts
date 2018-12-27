@@ -8,6 +8,7 @@ import {BreakpointObserver, Breakpoints} from '@angular/cdk/layout';
 import {CharacterService} from '../../services/character.service';
 import {SocketService} from '../../services/socket.service';
 import {AddMessageCombat} from '../stores/actions/socket.actions';
+import {SetCharacters} from "../stores/actions/character.actions";
 
 declare var PIXI: any;
 
@@ -154,9 +155,11 @@ export class CombatComponent implements OnInit, OnDestroy {
     this.enemy.spine.x = SPAWN_ENEMY;
 
     this.player.setFightStatus(true);
+    let result;
     this.selectedCharacter$.subscribe((c: ICharacter) => {
       const playerId = c._id;
       this.characterService.startFight(playerId, enemyId).subscribe((logs) => {
+        result = logs['logs']['result'];
         logs['logs']['turns'].forEach((turn) => {
           this.player.queue.push(turn);
           this.enemy.queue.push(turn);
@@ -175,7 +178,11 @@ export class CombatComponent implements OnInit, OnDestroy {
     });
     const tst = this.player.getFightStatus().subscribe((inFight) => {
       if (!inFight) {
-        console.log('add', waitingResult);
+        console.log('add', result);
+        this.player.exp += result['exp'];
+        this.store.selectOnce(UserState.selectedCharacter).subscribe((c) => {
+          c.exp = this.player.exp;
+        });
         this.store.dispatch(new AddMessageCombat(waitingResult));
         tst.unsubscribe();
       }

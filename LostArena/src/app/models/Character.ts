@@ -20,6 +20,7 @@ export interface ICharacter {
   dex: number;
   user_id: string;
   equipped: Object;
+  exp: number;
 }
 
 /* GAME CONFIG */
@@ -44,7 +45,6 @@ export const EquipmentParts = [
   'weapon',
   'chest'
 ];
-
 
 export enum CharacterState {
   IDLE,
@@ -199,7 +199,8 @@ export class CharacterChat {
     if (this.chatText.text.length > 0) {
       this.chatText.x = this.spine.x - (this.chatText.width / 2);
       this.chatText.y = this.spine.y - this.spine.height - 100;
-      if (Date.now() > this.toDelete){
+      if (Date.now() > this.toDelete) {
+        this.chatText.text = '';
         this.pApp.stage.removeChild(this.chatText);
       }
     }
@@ -318,8 +319,6 @@ export class Character implements ICharacter {
       strokeThickness: 1
     });
 
-
-
     // Create health percentage text
     this.healthPbPercent = new PIXI.Text('100%', {
       fill: [
@@ -371,6 +370,7 @@ export class Character implements ICharacter {
   _id: string;
   name: string;
   user_id: string;
+  exp: number;
 
   /* BASE STATS */
   con: number;
@@ -420,6 +420,11 @@ export class Character implements ICharacter {
       && ab.x + myWeaponWidth < bb.x + bb.width - ennWeaponWidth
       && ab.y + ab.height > bb.y
       && ab.y < bb.y + bb.height;
+  }
+
+
+  getWeapon() {
+    return this.equipped['weapon'];
   }
 
   getStr() {
@@ -482,6 +487,7 @@ export class Character implements ICharacter {
     this.con = c.con;
     this.user_id = c.user_id;
     this.level = c.level;
+    this.exp = c.exp;
   }
 
   changeSkin(skin) {
@@ -674,28 +680,54 @@ export class Character implements ICharacter {
 
   onAttack() {
     this.state = CharacterState.ATTACK;
-    const wait = this.spine.state.setAnimation(0, 'attack_0' + (Math.floor(Math.random() * (3) + 1)), false).animationEnd * 1000;
 
+    const isCrit = this.queue[0]['attack']['isCrit'];
+    const isMiss = this.queue[0]['attack']['isMiss'];
+
+
+    const wait = this.spine.state.setAnimation(0, 'attack_0' +  + (isCrit ? 3 : (Math.floor(Math.random() * (2) + 1))), false).animationEnd * 1000;
+    const style = {
+      'fontSize': 35,
+      'dropShadow': true,
+      'dropShadowAlpha': 0.4,
+      'dropShadowAngle': 1,
+      'dropShadowDistance': 4,
+      'fill': [
+        '#da4646',
+        '#950909'
+      ],
+      'fontFamily': 'Arial Black',
+      'fontStyle': 'italic',
+      'fontWeight': 'bold',
+      'strokeThickness': 1
+    };
     setTimeout(() => {
       // OnComplete broken as fck
+      let text = '';
       this.flipX(!this.spine.skeleton.flipX);
-      this.target.currentHealth -= +this.queue[0]['attack']['damages'];
+      if (isMiss) {
+        text = 'MISS';
+        style.fill = [
+          '#4a72f6',
+          '#3c5dca',
+          '#193cad'
+        ];
+        style.fontSize = 40;
+      } else {
+        if (isCrit) {
+          style.fontSize = 45;
+          style.fill =  [
+            '#ffcb0e',
+            '#deb10d',
+            '#ad9025'
+          ];
+        }
+        this.target.currentHealth -= +this.queue[0]['attack']['damages'];
+        text = this.queue[0]['attack']['damages'] + (isCrit ? '!!' : '');
+      }
       console.log(this.queue[0]);
-      const d = new PIXI.Text(this.queue[0]['attack']['damages'], {
-        'fontSize': 35,
-        'dropShadow': true,
-        'dropShadowAlpha': 0.4,
-        'dropShadowAngle': 1,
-        'dropShadowDistance': 4,
-        'fill': [
-          '#da4646',
-          '#950909'
-        ],
-        'fontFamily': 'Arial Black',
-        'fontStyle': 'italic',
-        'fontWeight': 'bold',
-        'strokeThickness': 1
-      });
+      const d = new PIXI.Text(text, style);
+
       d.direction = (Math.floor(Math.random() * 2) + 1);
       d.default = this.target.spine.x;
       d.x = this.target.spine.x;
@@ -709,7 +741,11 @@ export class Character implements ICharacter {
         this.target.doDie();
         this.win();
       } else {
-        this.target.hit();
+        if (isMiss) {
+          this.target.spine.state.setAnimation(0, ((Math.floor(Math.random() * 2) + 1) === 1) ? 'avoid' : 'defance', false);
+        } else {
+          this.target.hit();
+        }
       }
       this.queue.shift();
       this.target.queue.shift();

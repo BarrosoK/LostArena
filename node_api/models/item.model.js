@@ -9,6 +9,7 @@ let ItemSchema = mongoose.Schema({
     part: String,
     name: String,
     img: String,
+    icon: String,
     bonus: {}
 }, {toJSON: {virtuals: true}});
 

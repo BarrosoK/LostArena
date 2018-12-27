@@ -13,10 +13,9 @@
          *ngIf="(selectedCharacter$ | async) as character">
       <p class="mat-headline border-bottom">{{character.name}}</p>
       <p>lvl: {{character.level}}</p>
-      <p>dex: {{character.dex}}</p>
       <p>con: {{character.getCon()}}</p>
       <p>str: {{character.getStr()}}</p>
-      <p>sta: {{character.sta}}</p>
+      <p>sta: {{character.exp}}</p>
       <button (click)="changeWeapon('golden_armor')">golden</button>
       <button (click)="changeWeapon('steel_armor')">steel</button>
       <button (click)="changeWeapon('leather_armor')">leather</button>

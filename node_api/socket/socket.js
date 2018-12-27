@@ -91,6 +91,9 @@ module.exports = {
         socket.broadcast.emit('chatroom move', {id: character.name, position: position, face: face});
     },
     onChatRoomJoin: (socket, character) => {
+        if (!socket.handshake.session.user) {
+            return;
+        }
         if (!chatroom.has(socket.handshake.session.user._id)) {
             socket.broadcast.emit('chatroom join', character);
         }
@@ -123,7 +126,7 @@ module.exports = {
     },
     emit: (userId, event, data) => {
         Object.keys(io.sockets.sockets).forEach((s) => {
-            if (io.sockets.sockets[s].handshake.session.user._id === userId.toString()) {
+            if (io.sockets.sockets[s].handshake.session.user && io.sockets.sockets[s].handshake.session.user._id === userId.toString()) {
                 io.sockets.sockets[s].emit(event, data);
             }
         });

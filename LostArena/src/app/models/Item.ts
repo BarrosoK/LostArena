@@ -10,6 +10,7 @@ export interface IItem {
   id: number;
   type: number;
   part?: string;
+  icon?: string;
   img?: string;
   name: string;
   bonus?: Array<Object> | Object;

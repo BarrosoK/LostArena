@@ -8,6 +8,7 @@ import {map, tap} from 'rxjs/operators';
 import {Store} from '@ngxs/store';
 import {UserState} from '../app/stores/states/user.state';
 import {SetCharacters} from '../app/stores/actions/character.actions';
+import {DuelLog} from "../classes/duel";
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +44,8 @@ export class CharacterService {
     return this.httpClient.post(environment.api.character, characterInfo, JWTInterceptor.createHeader());
   }
 
-  startFight(idPlayer: string, idEnemy: string) {
-    return this.httpClient.post(environment.api.combat, {_idPlayer: idPlayer, _idEnemy: idEnemy}, JWTInterceptor.createHeader());
+  startFight(idPlayer: string, idEnemy: string): Observable<DuelLog> {
+    return this.httpClient.post<DuelLog>(environment.api.combat, {_idPlayer: idPlayer, _idEnemy: idEnemy}, JWTInterceptor.createHeader());
   }
 
 }

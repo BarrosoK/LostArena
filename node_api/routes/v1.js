@@ -28,7 +28,8 @@ router.delete(  '/character',       passport.authenticate('jwt', {session:false}
 router.get(     '/items',           passport.authenticate('jwt', {session:false}), ItemController.get);
 router.post(    '/character/equip', passport.authenticate('jwt', {session:false}), CharacterController.equipItem);
 router.post(    '/character/item',  passport.authenticate('jwt', {session:false}), CharacterController.addItem);
-router.get(    '/character/:id/item',  passport.authenticate('jwt', {session:false}), CharacterController.getItem);
+router.get(     '/character/:id/item',  passport.authenticate('jwt', {session:false}), CharacterController.getItem);
+router.delete(  '/items',       passport.authenticate('jwt', {session:false}), ItemController.deleteItem);
 
 /* USER */
 router.post(    '/users',           UserController.create);                                                    // C

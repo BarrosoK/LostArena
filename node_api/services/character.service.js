@@ -72,6 +72,7 @@ const createCharacter = async function(characterInfo, user){
     // GENERAL
     characterInfo.name = unique_key;
     characterInfo.level = 1;
+    characterInfo.exp = 0;
     // STATS
     characterInfo.sta = 5;
     characterInfo.dex = 5;

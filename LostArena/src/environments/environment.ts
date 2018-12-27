@@ -16,8 +16,102 @@ export const environment = {
     characters: apiBase + apiVersion + 'characters',
     combat: apiBase + apiVersion + 'combat',
     items: apiBase + apiVersion + 'items'
+  },
+  pixi: {
+    textStyles: {
+      hitDefault: {
+        'fontSize': 35,
+        'dropShadow': true,
+        'dropShadowAlpha': 0.4,
+        'dropShadowAngle': 1,
+        'dropShadowDistance': 4,
+        'fill': [
+          '#da4646',
+          '#950909'
+        ],
+        'fontFamily': 'Arial Black',
+        'fontStyle': 'italic',
+        'fontWeight': 'bold',
+        'strokeThickness': 1
+      },
+      hitMiss: {
+        'fontSize': 40,
+        'dropShadow': true,
+        'dropShadowAlpha': 0.4,
+        'dropShadowAngle': 1,
+        'dropShadowDistance': 4,
+        'fill': [
+          '#4a72f6',
+          '#3c5dca',
+          '#193cad'
+        ],
+        'fontFamily': 'Arial Black',
+        'fontStyle': 'italic',
+        'fontWeight': 'bold',
+        'strokeThickness': 1
+      },
+      hitCrit: {
+        'fontSize': 45,
+        'dropShadow': true,
+        'dropShadowAlpha': 0.4,
+        'dropShadowAngle': 1,
+        'dropShadowDistance': 4,
+        'fill': [
+          '#ffcb0e',
+          '#deb10d',
+          '#ad9025'
+        ],
+        'fontFamily': 'Arial Black',
+        'fontStyle': 'italic',
+        'fontWeight': 'bold',
+        'strokeThickness': 1
+      },
+      healthPercent: {
+        fill: [
+          '#63e882',
+          '#41a746',
+          '#137c28'
+        ],
+        fontFamily: 'Arial Black',
+        fontStyle: 'italic',
+        fontWeight: 'bold',
+        strokeThickness: 1
+      },
+      name: {
+        fill: [
+          '#4163ec',
+          '#5267bb',
+          '#08195f'
+        ],
+        fontFamily: 'Roboto',
+        fontStyle: 'italic',
+        fontWeight: 'bold',
+        strokeThickness: 1
+      }
+    }
+  },
+  gameConfig: {
+    combat: {
+      speed: 8,
+      time_scale: 1.80,
+      default_y: 500,
+      spawn: {
+        player: 200,
+        enemy: 600
+      },
+      ui: {
+        name_up: false,
+        progress_bar: {
+          offset: 0,
+          width: 300,
+          heigth: 30,
+          border: 3.5
+        }
+      }
+    }
   }
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file

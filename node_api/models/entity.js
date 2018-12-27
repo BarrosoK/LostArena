@@ -1,3 +1,5 @@
+const {Character} = require('../models');
+const { to, ReE, ReS } = require('../services/util.service');
 
 var socketio = require('../socket/socket');
 import {equippmentParts} from './item.enum';
@@ -13,6 +15,7 @@ module.exports.Player = class {
         this.equipped = character.equipped;
         this.maxHealth = 100;
         this.currentHealth = this.maxHealth;
+        this.exp = character.exp;
     }
 
     getStr() {
@@ -63,15 +66,30 @@ module.exports.Player = class {
         let attack = {};
 
 
-        attack.damages = this.getStr(); // Math.floor(Math.random() * 100) + 5;
-        attack.isCrit = false;
+        attack.damages = Math.round(this.getStr()) + Math.floor(Math.random() * 5) + 1;
+
         attack.isMiss = false;
+        if ((Math.floor(Math.random() * 5) + 1) === 5) {
+            attack.isMiss = true;
+            attack.damages *= 1.5;
+        }
+
+
+        attack.isCrit = false;
+        if ((Math.floor(Math.random() * 5) + 1) === 4) {
+            attack.isCrit = true;
+            attack.damages *= 1.5;
+        }
+
         attack.isSkill = false;
         attack.target = {id: target.character._id, name: target.character.name};
         return target.receiveDamage(attack);
     }
 
     receiveDamage(attack) {
+        if (attack.isMiss) {
+            return attack;
+        }
         this.currentHealth -= +attack.damages;
         return attack;
     }
@@ -87,7 +105,7 @@ module.exports.Player = class {
     fight(target) {
 
         let logs = [];
-        this.atkSpeed = 2;
+        this.atkSpeed = 1;
         target.atkSpeed = 1;
 
         this.turnToWait = 10 - this.atkSpeed * 2;
@@ -98,6 +116,10 @@ module.exports.Player = class {
         let atkLog = {};
 
         let warriors = [this, target];
+        if (this.atkSpeed < target.atkSpeed) {
+            warriors = [target, this];
+        }
+
 
         while (!this.isDead() && !target.isDead()) {
 
@@ -129,11 +151,18 @@ module.exports.Player = class {
             result.win = true;
             result.exp = 5;
             result.gold = 2;
+            result.char = this.addExperience(result.exp);
         } else {
             // WTF ??
             console.log('IT HAPPENED');
         }
         return {result, turns:logs};
+    }
+
+    async addExperience(amount) {
+        this.exp += amount;
+        this.character.exp += amount;
+        this.character = this.character.update(this.character);
     }
 
 };

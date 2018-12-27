@@ -14,6 +14,7 @@ import {ChatroomComponent} from './chatroom/chatroom.component';
 import {CharacterComponent} from "./character/character.component";
 import {ShopComponent} from "./shop/shop.component";
 import {AdminComponent} from "./admin/admin.component";
+import {FightComponent} from "./fight/fight.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path: 'shop', component: ShopComponent, canActivate: [AuthGuard]},
   {path: 'chatroom', component: ChatroomComponent, canActivate: [AuthGuard]},
   {path: 'combat', component: CombatComponent, canActivate: [AuthGuard]},
+  {path: 'fight', component: FightComponent, canActivate: [AuthGuard]},
 
   {path: 'login', component: LoginComponent, canActivate: [DcFirstGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [DcFirstGuard]},

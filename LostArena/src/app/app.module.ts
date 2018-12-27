@@ -51,11 +51,13 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AdminComponent } from './admin/admin.component';
 import {FileDropModule} from "ngx-file-drop";
 import {MatExpansionModule} from '@angular/material/expansion';
+import { FightComponent } from './fight/fight.component';
+import {Duel} from "../classes/duel";
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
 
-const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
+const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
 
 @NgModule({
   declarations: [
@@ -73,6 +75,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     CharacterComponent,
     ShopComponent,
     AdminComponent,
+    FightComponent,
   ],
   imports: [
     BrowserModule,
@@ -112,7 +115,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:4200', 'localhost:3000', 'localhost:3002'],
+        whitelistedDomains: ['localhost:4200', '92.92.192.178:3000', '92.92.192.178:3002', 'localhost:3000', 'localhost:3002'],
         blacklistedRoutes: ['localhost:3000/v1/users/login'],
         headerName: 'Authorization',
         authScheme: '',

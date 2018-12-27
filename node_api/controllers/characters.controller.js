@@ -14,6 +14,7 @@ const fight = async function (req, res) {
     } else {
         player.sendMessage('combat', 'You lost your fight against ' + enemy.name);
     }
+    console.log(logs.result);
     return ReS(res, {player: player, enemy: enemy, logs: logs});
 };
 module.exports.fight = fight;
