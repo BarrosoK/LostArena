@@ -424,6 +424,9 @@ export class Character implements ICharacter {
 
 
   getWeapon() {
+    if (!this.equipped) {
+      return null;
+    }
     return this.equipped['weapon'];
   }
 

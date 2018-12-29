@@ -1,0 +1,75 @@
+{{(characterService.selectedCharacter$ | async)?.getStr()}}
+{{(characterService.selectedCharacter$ | async)?.exp}}
+
+
+<div class="example-container">
+  <h2>Available numbers</h2>
+
+  <div
+    id="all"
+    cdkDropList
+    [cdkDropListData]="all"
+    cdkDropListConnectedTo="even"
+    class="example-list"
+    (cdkDropListDropped)="drop($event)"
+    [cdkDropListEnterPredicate]="noReturnPredicate">
+    <div
+      class="example-box"
+      *ngFor="let number of all"
+      [cdkDragData]="number"
+      cdkDrag>{{number}}</div>
+  </div>
+</div>
+
+<div class="example-container">
+  <h2>Even numbers</h2>
+
+  <div
+    id="even"
+    cdkDropList
+    [cdkDropListData]="even"
+    cdkDropListConnectedTo="all"
+    class="example-list"
+    (cdkDropListDropped)="drop($event)"
+    [cdkDropListEnterPredicate]="evenPredicate">
+    <div
+      class="example-box"
+      *ngFor="let number of even"
+      cdkDrag
+      [cdkDragData]="number">{{number}}</div>
+  </div>
+</div>
+
+
+<mat-grid-list [cols]="5"  rowHeight="1:1.4" gutterSize="2rem">
+  <mat-grid-tile *ngFor="let item of (items | async); index as i">
+    <!-- Card -->
+    <mdb-card>
+      <div class="view rgba-white-slight waves-light" mdbWavesEffect>
+        <img style="width: 200px; height: 200px" [src]="'src/assets/icons/' + item.icon" [alt]="item.name">
+        <a>
+          <div class="mask"></div>
+        </a>
+      </div>
+      <mdb-card-body>
+        <mdb-card-title>
+          <h4>{{ item.name }}</h4>
+        </mdb-card-title>
+        <div *ngIf="item.bonus">
+          {{item.bonus | json}}
+        </div>
+      </mdb-card-body>
+      <mdb-card-footer>
+        <ng-container *ngIf="(characterService.selectedCharacter$ | async)?.getWeapon()?._id === item._id;then equipped else notEquipped "></ng-container>
+        <ng-template #notEquipped>
+          <button mdbBtn color="primary" (click)="equip(item._id)" mdbWavesEffect>Equip</button>
+        </ng-template>
+        <ng-template #equipped>
+          <button mdbBtn color="danger" (click)="equip(item._id)" mdbWavesEffect>Unequip</button>
+        </ng-template>
+        <button mdbBtn color="danger" (click)="throwItem(item._id)" mdbWavesEffect>Delete</button>
+      </mdb-card-footer>
+    </mdb-card>
+    <!-- Card -->
+  </mat-grid-tile>
+</mat-grid-list>

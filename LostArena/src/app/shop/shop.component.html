@@ -1,0 +1,33 @@
+<mat-grid-list [cols]="4"  rowHeight="1:1.4" gutterSize="1rem">
+  <mat-grid-tile *ngFor="let item of (items | async); index as i">
+
+    <!-- Card -->
+    <mdb-card>
+      <div class="view rgba-white-slight waves-light" mdbWavesEffect>
+        <img [src]="'src/assets/icons/' + item.icon" class="img-fluid" alt="Responsive image" class="img-thumbnail"
+             style="width: 300px; height: 200px">
+        <a>
+          <div class="mask"></div>
+        </a>
+      </div>
+      <mdb-card-body>
+        <mdb-card-title>
+          <h4>{{ item.name }}</h4>
+        </mdb-card-title>
+        {{item.type}}
+        <div *ngIf="item.type === 1">
+          {{item?.part}}
+        </div>
+        <div *ngFor="let bonus of item.bonus">
+          {{bonus.stat}}
+          {{bonus.default}}
+          {{bonus?.variance}}
+        </div>
+      </mdb-card-body>
+      <mdb-card-footer>
+        <button mdbBtn color="primary" (click)="buy(item.id)"  mdbWavesEffect>Buy</button>
+      </mdb-card-footer>
+    </mdb-card>
+    <!-- Card -->
+  </mat-grid-tile>
+</mat-grid-list>

@@ -1,0 +1,39 @@
+<div #pixiContainer></div>
+<form [formGroup]="chatForm" novalidate (ngSubmit)="onSubmit()" class="container">
+  <mat-card class="shipping-card"
+            fxLayout="column"
+            fxLayout.xs="column"
+            fxFlex.lt-md ="100%"
+            fxFlex.gt-md ="40%"
+  >
+    <mat-card-header>
+      <mat-card-title>Chat</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput #text maxlength="40" type="text" placeholder="Text" formControlName="text">
+            <mat-hint align="end">{{text.value.length}} / 40</mat-hint>
+            <mat-error *ngIf="chatForm.controls['text'].hasError('required')">
+              Text is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+
+<mat-nav-list>
+  <mat-list-item *ngFor="let msg of (messages$ | async | slice:0:5) ; index as i">
+    <a matLine>{{ msg.id }}:{{ msg.text }}</a>
+  </mat-list-item>
+</mat-nav-list>

@@ -1,0 +1,12 @@
+Total item: {{items?.length}}
+<div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+  <div class="box" *ngFor="let item of items" cdkDrag>
+    <div class="custom-placeholder" *cdkDragPlaceholder></div>
+    <div>
+      {{item.id}}. {{item.name}}
+    </div>
+    <button mat-icon-button>
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</div>
