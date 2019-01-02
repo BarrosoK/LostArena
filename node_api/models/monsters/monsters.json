@@ -1,0 +1,89 @@
+[
+  {
+    "id": 1,
+    "level": 1,
+    "name": "Valentin Villemain",
+    "str": 5,
+    "sta": 5,
+    "con": 5,
+    "dex": 5,
+    "spine": {
+      "name": "chicken",
+      "scale": 0.5,
+      "offset": 40
+    }
+  },
+  {
+    "id": 2,
+    "level": 2,
+    "name": "Victor Weber",
+    "str": 5,
+    "sta": 10,
+    "con": 8,
+    "dex": 7,
+    "loot": [
+      {"id": 1}
+    ],
+    "spine": {
+      "name": "yeti",
+      "scale": 1.2,
+      "offset": 70
+    }
+  },
+  {
+    "id": 3,
+    "level": 3,
+    "name": "Daniel Rahmeh",
+    "str": 7,
+    "sta": 20,
+    "con": 14,
+    "dex": 8,
+    "spine": {
+      "name": "tree",
+      "scale": 1.2,
+      "offset": 70
+    }
+  },
+  {
+    "id": 4,
+    "level": 4,
+    "name": "Olivier Metzonger",
+    "str": 14,
+    "sta": 10,
+    "con": 9,
+    "dex": 20,
+    "spine": {
+      "name": "bat",
+      "scale": 1.0,
+      "offset": 70
+    }
+  },
+  {
+    "id": 5,
+    "level": 5,
+    "name": "Quentin Buche",
+    "str": 8,
+    "sta": 25,
+    "con": 22,
+    "dex": 150,
+    "spine": {
+      "name": "ginseng",
+      "scale": 1.0,
+      "offset": 70
+    }
+  },
+  {
+    "id": 6,
+    "level": 6,
+    "name": "David Goerig",
+    "str": 30,
+    "sta": 30,
+    "con": 30,
+    "dex": 20,
+    "spine": {
+      "name": "mummy",
+      "scale": 1.0,
+      "offset": 70
+    }
+  }
+]

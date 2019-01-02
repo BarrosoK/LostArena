@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import {map, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {Store} from '@ngxs/store';
 import {AddMessageSystem} from '../app/stores/actions/socket.actions';
-import {Observable} from 'rxjs';
+import {merge, Observable} from 'rxjs';
 import {SocketState} from '../app/stores/states/socket.state';
 import {CharacterChat} from '../app/models/Character';
 
@@ -18,11 +18,6 @@ export class SocketService {
   clients$: Observable<number>;
 
   constructor(private socket: Socket, private store: Store) {
-
-    this.getMessageSystem().subscribe((msg: string) => {
-      this.store.dispatch(new AddMessageSystem(msg));
-    });
-
     this.messagesSystem$ = this.store.select(SocketState.sysMessages);
     this.messagesCombat$ = this.store.select(SocketState.cmbMessages);
     this.clients$ = this.socket.fromEvent('clients');
@@ -46,7 +41,11 @@ export class SocketService {
   }
 
   getMessageCombat() {
-    return this.socket.fromOneTimeEvent('combat');
+    return this.socket.fromEvent('combat');
+  }
+
+  getAllMessage() {
+    return merge(this.socket.fromEvent('msg_sys'), this.socket.fromEvent('combat'));
   }
 
   onChatRoomJoin() {

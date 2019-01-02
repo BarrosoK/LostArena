@@ -1,4 +1,6 @@
-const { Character, User, Item } 	    = require('../models');
+import {rawSkills} from "../controllers/skill.controller";
+
+const { Character, User, Item, Skill } 	    = require('../models');
 const  db  = require('../models/index');
 const validator     = require('validator');
 const { to, TE }    = require('../services/util.service');
@@ -23,14 +25,16 @@ const ItemType = Object.freeze({
     POTION:  2,
 });
 
+
+let rawItems = fs.readFileSync('./models/items/items.json');
+
 const addItemToCharacter = async function(characterId, itemId) {
     let err, item;
 
-        let rawdata = fs.readFileSync('./models/items/items.json');  
-        let itemRef = JSON.parse(rawdata)[itemId];  
+        //TODO: Read the file at the server start !!!!!
+        let itemRef = JSON.parse(rawItems)[itemId];
         itemRef.character_id = characterId;
         let b = [];
-
 
         if (itemRef.type == ItemType.EQUIPMENT) {
         itemRef['bonus'].forEach(bonus => {
@@ -55,6 +59,21 @@ const addItemToCharacter = async function(characterId, itemId) {
     return item;
 }
 module.exports.addItemToCharacter = addItemToCharacter;
+
+export const addSkillToCharacter = async function(characterId, skillId) {
+    let err, r;
+    let skill = {};
+
+    // let skillRef = JSON.parse(rawSkills)[skillId];
+    skill.character_id = characterId;
+    skill.skill_id = skillId;
+    skill.level = 1;
+    [err, r] = await to(Skill.create(skill));
+    if (err) {
+        TE(err);
+    }
+    return r;
+};
 
 const createCharacter = async function(characterInfo, user){
     let unique_key, auth_info, err, character;

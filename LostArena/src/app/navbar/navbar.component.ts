@@ -52,7 +52,7 @@ export class NavbarComponent implements OnInit {
   }
 
   remove(index) {
-    this.store.dispatch(new RemoveMessageCombat(index));
+    this.store.dispatch(new RemoveMessageSystem(index));
   }
 
   constructor(private breakpointObserver: BreakpointObserver, public authService: AuthService,

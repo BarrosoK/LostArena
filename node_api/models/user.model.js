@@ -71,7 +71,6 @@ UserSchema.methods.comparePassword = async function(pw){
 
 UserSchema.methods.Characters = async function() {
     let err, characters;
-    console.log();
     [err, charactes] = await to (Character.find({'users.user': this._id}));
     if (err) TE('err getting characters');
     return characters;

@@ -63,7 +63,7 @@ export class JWTInterceptor implements HttpInterceptor {
       catchError(JWTInterceptor.handleError),
       tap((res) => {
         if (res['body'] && res['body']['character']) {
-            this._store.dispatch(new SelectCharacter(res['body']['character']));
+          this._store.dispatch(new SelectCharacter(res['body']['character']));
         }
       })
     );

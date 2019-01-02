@@ -6,7 +6,6 @@ const fs = require('fs');
 /* POST */
 const create = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
-    return ReS(res, {message:'fdp'});
     const body = req.body;
     if (!body.itemId) {
         return ReE(res, 'Pleaser enter a item id');
@@ -21,9 +20,10 @@ const create = async function(req, res){
 };
 module.exports.create = create;
 
+let rawdata = fs.readFileSync('./models/items/items.json');
+
 /* GET */
 export const get = async function(req, res){
-    let rawdata = fs.readFileSync('./models/items/items.json');
     let items = JSON.parse(rawdata);
     return ReS(res, {items: items});
 };

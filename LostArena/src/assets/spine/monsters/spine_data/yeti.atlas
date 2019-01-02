@@ -1,0 +1,48 @@
+
+yeti.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+res_mon/04. yeti/yeti_body
+  rotate: false
+  xy: 284, 129
+  size: 99, 125
+  orig: 99, 125
+  offset: 0, 0
+  index: -1
+res_mon/04. yeti/yeti_head
+  rotate: false
+  xy: 2, 102
+  size: 179, 152
+  orig: 179, 152
+  offset: 0, 0
+  index: -1
+res_mon/04. yeti/yeti_l_a
+  rotate: false
+  xy: 183, 126
+  size: 99, 128
+  orig: 99, 128
+  offset: 0, 0
+  index: -1
+res_mon/04. yeti/yeti_l_l
+  rotate: false
+  xy: 385, 153
+  size: 54, 101
+  orig: 54, 101
+  offset: 0, 0
+  index: -1
+res_mon/04. yeti/yeti_r_a
+  rotate: false
+  xy: 183, 2
+  size: 101, 122
+  orig: 101, 122
+  offset: 0, 0
+  index: -1
+res_mon/04. yeti/yeti_r_l
+  rotate: false
+  xy: 2, 2
+  size: 52, 98
+  orig: 52, 98
+  offset: 0, 0
+  index: -1

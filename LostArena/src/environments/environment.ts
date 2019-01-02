@@ -15,7 +15,9 @@ export const environment = {
     character: apiBase + apiVersion + 'character',
     characters: apiBase + apiVersion + 'characters',
     combat: apiBase + apiVersion + 'combat',
-    items: apiBase + apiVersion + 'items'
+    items: apiBase + apiVersion + 'items',
+    monster: apiBase + apiVersion + 'monsters',
+    pve: apiBase + apiVersion + 'pve'
   },
   pixi: {
     textStyles: {

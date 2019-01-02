@@ -1,49 +1,85 @@
-{{(characterService.selectedCharacter$ | async)?.getStr()}}
-{{(characterService.selectedCharacter$ | async)?.exp}}
+<app-profile [extended]="true"></app-profile>
 
-
-<div class="example-container">
-  <h2>Available numbers</h2>
-
+<div>
+  <h2>All</h2>
   <div
-    id="all"
+    id="items"
     cdkDropList
-    [cdkDropListData]="all"
-    cdkDropListConnectedTo="even"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)"
-    [cdkDropListEnterPredicate]="noReturnPredicate">
+    fxLayout="row"
+    class="bg-light"
+    cdkDropListOrientation="horizontal"
+    [cdkDropListConnectedTo]="['weapon', 'chest', 'helmet']"
+  >
+
     <div
       class="example-box"
-      *ngFor="let number of all"
-      [cdkDragData]="number"
-      cdkDrag>{{number}}</div>
-  </div>
-</div>
-
-<div class="example-container">
-  <h2>Even numbers</h2>
-
-  <div
-    id="even"
-    cdkDropList
-    [cdkDropListData]="even"
-    cdkDropListConnectedTo="all"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)"
-    [cdkDropListEnterPredicate]="evenPredicate">
-    <div
-      class="example-box"
-      *ngFor="let number of even"
+      *ngFor="let item of all"
+      [cdkDragData]="item"
       cdkDrag
-      [cdkDragData]="number">{{number}}</div>
+    >
+
+      <mat-card *ngIf="(characterService.selectedCharacter$ | async)?.getEquipment(item.part)?._id !== item._id" (click)="openDialog(item)">
+        <div class="view rgba-white-slight waves-light" mdbWavesEffect>
+          <img style="width: 70px; height: 70px" [src]="'src/assets/icons/' + item.icon" [alt]="item.name">
+          <a>
+            <div class="mask"></div>
+          </a>
+        </div>
+
+        <div *cdkDragPreview>
+          <app-item [actions]="false"  [item]="item"></app-item>
+        </div>
+
+      </mat-card>
+    </div>
+
   </div>
 </div>
 
+<div fxLayout="row" fxLayoutAlign="space-evenly center">
+  <div>
+    <h2>Weapon</h2>
+    <div
+      id="weapon"
+      fxLayout="row"
+      cdkDropList
+      class="bg-light"
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="equipDrag($event)"
+      [cdkDropListEnterPredicate]="weaponPredicate">
+      <app-item [item]="weapon"></app-item>
+    </div>
+  </div>
+  <div>
+    <h2>Chest</h2>
+    <div
+      id="chest"
+      fxLayout="row"
+      cdkDropList
+      class="bg-light"
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="equipDrag($event)"
+      [cdkDropListEnterPredicate]="isChest">
+      <app-item [item]="chest"></app-item>
+    </div>
+  </div>
+  <div>
+    <h2>Helmet</h2>
+    <div
+      id="helmet"
+      fxLayout="row"
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      class="bg-light"
+      (cdkDropListDropped)="equipDrag($event)"
+      [cdkDropListEnterPredicate]="isHelmet">
+    </div>
+  </div>
+</div>
+<!--
 
 <mat-grid-list [cols]="5"  rowHeight="1:1.4" gutterSize="2rem">
   <mat-grid-tile *ngFor="let item of (items | async); index as i">
-    <!-- Card -->
     <mdb-card>
       <div class="view rgba-white-slight waves-light" mdbWavesEffect>
         <img style="width: 200px; height: 200px" [src]="'src/assets/icons/' + item.icon" [alt]="item.name">
@@ -70,6 +106,6 @@
         <button mdbBtn color="danger" (click)="throwItem(item._id)" mdbWavesEffect>Delete</button>
       </mdb-card-footer>
     </mdb-card>
-    <!-- Card -->
   </mat-grid-tile>
 </mat-grid-list>
+-->

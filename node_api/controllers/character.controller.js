@@ -101,7 +101,6 @@ export const getItem = async (req, res) => {
 const addItem = async function(req, res){
     res.setHeader('Content-Type', 'application/json');
     const body = req.body;
-    console.log(body);
     if (!Object.keys('itemId')) {
         return ReE(res, 'Pleaser enter a item id');
     } else {

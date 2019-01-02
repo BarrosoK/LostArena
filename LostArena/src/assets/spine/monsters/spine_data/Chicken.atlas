@@ -1,0 +1,55 @@
+
+Chicken.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+res_mon/01. Chicken/Chicken_a
+  rotate: false
+  xy: 2, 32
+  size: 36, 15
+  orig: 36, 15
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_body
+  rotate: false
+  xy: 132, 197
+  size: 90, 57
+  orig: 90, 57
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_head1
+  rotate: false
+  xy: 2, 120
+  size: 128, 134
+  orig: 128, 134
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_head2
+  rotate: false
+  xy: 132, 141
+  size: 59, 54
+  orig: 59, 54
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_l_l
+  rotate: false
+  xy: 2, 2
+  size: 17, 28
+  orig: 17, 28
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_r_l
+  rotate: false
+  xy: 2, 2
+  size: 17, 28
+  orig: 17, 28
+  offset: 0, 0
+  index: -1
+res_mon/01. Chicken/Chicken_t
+  rotate: false
+  xy: 2, 49
+  size: 88, 69
+  orig: 88, 69
+  offset: 0, 0
+  index: -1

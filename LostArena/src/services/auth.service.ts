@@ -47,7 +47,6 @@ export class AuthService {
 
   login(creditentials) {
     this.http.post(environment.api.login, creditentials).subscribe(async (res) => {
-      console.log(res);
       if (res['success']) {
         localStorage.setItem('token', res['token']);
         this.store.dispatch(new SetSession(res['token'], res['user']));

@@ -1,0 +1,48 @@
+
+ginseng.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+res_mon/03. ginseng/ginseng_body
+  rotate: true
+  xy: 2, 45
+  size: 81, 154
+  orig: 81, 154
+  offset: 0, 0
+  index: -1
+res_mon/03. ginseng/ginseng_head
+  rotate: false
+  xy: 158, 48
+  size: 79, 78
+  orig: 79, 78
+  offset: 0, 0
+  index: -1
+res_mon/03. ginseng/ginseng_l_a
+  rotate: true
+  xy: 158, 2
+  size: 44, 28
+  orig: 44, 28
+  offset: 0, 0
+  index: -1
+res_mon/03. ginseng/ginseng_l_l
+  rotate: true
+  xy: 103, 19
+  size: 24, 47
+  orig: 24, 47
+  offset: 0, 0
+  index: -1
+res_mon/03. ginseng/ginseng_r_a
+  rotate: false
+  xy: 2, 19
+  size: 50, 24
+  orig: 50, 24
+  offset: 0, 0
+  index: -1
+res_mon/03. ginseng/ginseng_r_l
+  rotate: true
+  xy: 54, 19
+  size: 24, 47
+  orig: 24, 47
+  offset: 0, 0
+  index: -1

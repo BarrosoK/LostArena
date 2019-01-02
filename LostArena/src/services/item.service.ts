@@ -7,7 +7,6 @@ import {IItem} from '../app/models/Item';
 import {Select, Store} from '@ngxs/store';
 import {UserState} from '../app/stores/states/user.state';
 import {Observable} from 'rxjs';
-import {RequestOptions} from "@angular/http";
 
 @Injectable({
   providedIn: 'root'

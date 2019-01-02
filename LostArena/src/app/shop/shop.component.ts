@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {ItemService} from "../../services/item.service";
-import {IItem} from "../models/Item";
-import {Subject} from "rxjs";
-import {CharacterService} from "../../services/character.service";
+import {ItemService} from '../../services/item.service';
+import {IItem} from '../models/Item';
+import {Subject} from 'rxjs';
+import {CharacterService} from '../../services/character.service';
+import {MatDialog, MatDialogConfig} from '@angular/material';
+import {CreationComponent} from '../characters/creation/creation.component';
+import {ItemDialogComponent} from "./item-dialog/item-dialog.component";
+import {first} from "rxjs/operators";
 
 @Component({
   selector: 'app-shop',
@@ -13,17 +17,17 @@ export class ShopComponent implements OnInit {
 
   items: Subject<IItem[]>;
 
-  constructor(private itemService: ItemService, private characterService: CharacterService) {
+  constructor(private itemService: ItemService, private characterService: CharacterService, public dialog: MatDialog) {
     this.items = new Subject<IItem[]>();
   }
 
   buy(itemId) {
-    this.characterService.selectedCharacter$.subscribe((c) => {
+    this.characterService.selectedCharacter$.pipe(first()).subscribe((c) => {
       if (!c) {
         return;
       }
-      this.itemService.buy(itemId, c._id).subscribe((r) => {
-        console.log(r);
+      this.itemService.buy(itemId, c._id).pipe(first()).subscribe((r) => {
+        this.openDialog(r['item']);
       });
     });
   }
@@ -34,4 +38,17 @@ export class ShopComponent implements OnInit {
     });
   }
 
+  openDialog(item): void {
+
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = item;
+
+    const dialogRef = this.dialog.open(ItemDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
 }

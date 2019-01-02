@@ -30,9 +30,16 @@ CharacterSchema.virtual('items', {
     foreignField: 'character_id',
 });
 
+CharacterSchema.virtual('skills', {
+    ref: 'Skill',
+    localField: '_id',
+    foreignField: 'character_id',
+});
+
 CharacterSchema.pre('findOne', function() {
     this.populate('user');
     this.populate('items');
+    this.populate('skills');
     equippmentParts.forEach((part) => {
         this.populate('equipped.' + part);
     });
@@ -42,6 +49,7 @@ CharacterSchema.pre('findOne', function() {
 CharacterSchema.pre('find', function() {
     this.populate('user');
     this.populate('items');
+    this.populate('skills');
     equippmentParts.forEach((part) => {
         this.populate('equipped.' + part);
     });
@@ -49,14 +57,8 @@ CharacterSchema.pre('find', function() {
 
 CharacterSchema.methods.update = async function(character){
     let err, result;
-    [err, result] = await to(Character.updateOne({_id:character._id},
-        {
-            $set: {
-                exp: character.exp
-            }
-        }));
+    [err, result] = await to(Character.updateOne({_id:character._id}, character));
     const c =  await to(Character.findOne({_id:character._id}));
-    console.log(result, c);
     return c;
 };
 let Character = module.exports = mongoose.model('Character', CharacterSchema);

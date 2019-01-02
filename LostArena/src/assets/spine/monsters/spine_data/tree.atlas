@@ -1,0 +1,41 @@
+
+tree.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+res_mon/05. tree/tree_body
+  rotate: true
+  xy: 2, 2
+  size: 107, 139
+  orig: 107, 139
+  offset: 0, 0
+  index: -1
+res_mon/05. tree/tree_l_a
+  rotate: false
+  xy: 226, 33
+  size: 78, 76
+  orig: 78, 76
+  offset: 0, 0
+  index: -1
+res_mon/05. tree/tree_l_l
+  rotate: false
+  xy: 344, 68
+  size: 34, 41
+  orig: 34, 41
+  offset: 0, 0
+  index: -1
+res_mon/05. tree/tree_r_a
+  rotate: false
+  xy: 143, 17
+  size: 81, 92
+  orig: 81, 92
+  offset: 0, 0
+  index: -1
+res_mon/05. tree/tree_r_l
+  rotate: false
+  xy: 306, 68
+  size: 36, 41
+  orig: 36, 41
+  offset: 0, 0
+  index: -1

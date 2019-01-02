@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "SKILL_01",
+    "type": "melee",
+    "effect": [
+      {
+        "type": "dmg",
+        "amount": [10, 12]
+      }
+    ],
+    "cooldown": [4, 3]
+  }
+]

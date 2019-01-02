@@ -26,7 +26,7 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {LogoutComponent} from './logout/logout.component';
 
 import {NgModule} from '@angular/core';
-import {NgxsModule} from '@ngxs/store';
+import {NgxsModule, Store} from '@ngxs/store';
 import {UserState, UserStateModel} from './stores/states/user.state';
 import {NgxsLoggerPluginModule} from '@ngxs/logger-plugin';
 import {NgxsReduxDevtoolsPluginModule} from '@ngxs/devtools-plugin';
@@ -49,15 +49,22 @@ import { CharacterComponent } from './character/character.component';
 import { ShopComponent } from './shop/shop.component';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AdminComponent } from './admin/admin.component';
-import {FileDropModule} from "ngx-file-drop";
+import {FileDropModule} from 'ngx-file-drop';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { FightComponent } from './fight/fight.component';
-import {Duel} from "../classes/duel";
+import {Duel} from '../classes/duel';
+import { ItemDialogComponent } from './shop/item-dialog/item-dialog.component';
+import { ItemDirective } from './character/item.directive';
+import { PveComponent } from './pve/pve.component';
+import {SocketService} from '../services/socket.service';
+import {AddMessageCombat, AddMessageSystem} from './stores/actions/socket.actions';
+import { ProfileComponent } from './character/profile/profile.component';
+import { ItemComponent } from './character/item/item.component';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
 
-const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
 
 @NgModule({
   declarations: [
@@ -76,6 +83,11 @@ const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} }
     ShopComponent,
     AdminComponent,
     FightComponent,
+    ItemDialogComponent,
+    ItemDirective,
+    PveComponent,
+    ProfileComponent,
+    ItemComponent,
   ],
   imports: [
     BrowserModule,
@@ -133,4 +145,9 @@ const config: SocketIoConfig = { url: 'http://92.92.192.178:3002', options: {} }
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(private socket: SocketService, private store: Store) {
+    this.socket.getAllMessage().subscribe((m) => {
+      this.store.dispatch(new AddMessageSystem(m.toString()));
+    });
+  }
 }

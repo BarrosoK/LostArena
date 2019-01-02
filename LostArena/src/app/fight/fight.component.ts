@@ -8,6 +8,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {UserState} from '../stores/states/user.state';
 import {Duel, DuelLog} from '../../classes/duel';
 import {SetCharacters} from "../stores/actions/character.actions";
+import {first} from "rxjs/operators";
 declare var PIXI: any;
 
 
@@ -33,9 +34,9 @@ export class FightComponent implements OnInit {
   ngOnInit() {
 
     this.pApp = new PIXI.Application({
-      resolution: 1,
+      resolution: window.devicePixelRatio || 1,
       height: 600,
-      width: 800,
+      width: 1000,
       backgroundColor: 0x1099bb,
       antialias: true,
     });
@@ -101,7 +102,7 @@ export class FightComponent implements OnInit {
       window.innerWidth / 1200,
       window.innerHeight / 1100
     );
-    const newWidth = Math.ceil(800 * scaleFactor);
+    const newWidth = Math.ceil(1000 * scaleFactor);
     const newHeight = Math.ceil(600 * scaleFactor);
 
     this.pApp.renderer.view.style.width = `${newWidth}px`;
@@ -117,6 +118,7 @@ export class FightComponent implements OnInit {
     if (this.duel) {
       this.duel.delete();
     }
+    console.log(character.level, character, duel);
     this.duel = new Duel(this.pApp, duel, this.store);
     this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
       this.store.dispatch(new SetCharacters(characters));

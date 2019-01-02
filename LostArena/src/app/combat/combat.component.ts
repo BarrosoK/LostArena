@@ -171,21 +171,6 @@ export class CombatComponent implements OnInit, OnDestroy {
         }
       });
     });
-    let waitingResult = '';
-    this.socket.getMessageCombat().then((m) => {
-      console.log(m.toString());
-      waitingResult = m.toString();
-    });
-    const tst = this.player.getFightStatus().subscribe((inFight) => {
-      if (!inFight) {
-        console.log('add', result);
-        this.player.exp += result['exp'];
-        this.store.selectOnce(UserState.selectedCharacter).subscribe((c) => {
-          c.exp = this.player.exp;
-        });
-        this.store.dispatch(new AddMessageCombat(waitingResult));
-        tst.unsubscribe();
-      }
-    });
+
   }
 }

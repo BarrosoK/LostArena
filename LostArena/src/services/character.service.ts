@@ -48,5 +48,9 @@ export class CharacterService {
     return this.httpClient.post<DuelLog>(environment.api.combat, {_idPlayer: idPlayer, _idEnemy: idEnemy}, JWTInterceptor.createHeader());
   }
 
+  startPveFight(idPlayer: string, idMonster: number): Observable<DuelLog> {
+    return this.httpClient.post<DuelLog>(environment.api.pve, {id_player: idPlayer, id_monster: idMonster});
+  }
+
 }
 

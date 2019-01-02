@@ -15,18 +15,24 @@ import {CharacterComponent} from "./character/character.component";
 import {ShopComponent} from "./shop/shop.component";
 import {AdminComponent} from "./admin/admin.component";
 import {FightComponent} from "./fight/fight.component";
+import {ItemDialogComponent} from "./shop/item-dialog/item-dialog.component";
+import {PveComponent} from "./pve/pve.component";
+import {ItemComponent} from "./character/item/item.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'home', redirectTo: ''},
   {path: 'characters', component: CharactersComponent, canActivate: [AuthGuard]},
   {path: 'characters/creation', component: CreationComponent, canActivate: [AuthGuard]},
+  {path: 'item/dialog', component: ItemDialogComponent, canActivate: [AuthGuard]},
+  {path: 'myItem/dialog', component: ItemComponent, canActivate: [AuthGuard]},
 
   {path: 'character', component: CharacterComponent, canActivate: [AuthGuard]},
   {path: 'shop', component: ShopComponent, canActivate: [AuthGuard]},
   {path: 'chatroom', component: ChatroomComponent, canActivate: [AuthGuard]},
   {path: 'combat', component: CombatComponent, canActivate: [AuthGuard]},
   {path: 'fight', component: FightComponent, canActivate: [AuthGuard]},
+  {path:  'pve', component: PveComponent, canActivate: [AuthGuard]},
 
   {path: 'login', component: LoginComponent, canActivate: [DcFirstGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [DcFirstGuard]},

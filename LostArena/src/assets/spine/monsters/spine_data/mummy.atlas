@@ -1,0 +1,48 @@
+
+mummy.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+res_mon/06. mummy/mummy_body
+  rotate: true
+  xy: 2, 3
+  size: 108, 127
+  orig: 108, 127
+  offset: 0, 0
+  index: -1
+res_mon/06. mummy/mummy_head
+  rotate: false
+  xy: 131, 7
+  size: 118, 104
+  orig: 118, 104
+  offset: 0, 0
+  index: -1
+res_mon/06. mummy/mummy_l_a
+  rotate: false
+  xy: 318, 54
+  size: 80, 57
+  orig: 80, 57
+  offset: 0, 0
+  index: -1
+res_mon/06. mummy/mummy_l_l
+  rotate: false
+  xy: 251, 37
+  size: 65, 74
+  orig: 65, 74
+  offset: 0, 0
+  index: -1
+res_mon/06. mummy/mummy_r_a
+  rotate: false
+  xy: 400, 55
+  size: 71, 56
+  orig: 71, 56
+  offset: 0, 0
+  index: -1
+res_mon/06. mummy/mummy_r_l
+  rotate: true
+  xy: 318, 2
+  size: 50, 71
+  orig: 50, 71
+  offset: 0, 0
+  index: -1

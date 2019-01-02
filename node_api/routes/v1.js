@@ -1,3 +1,6 @@
+import * as MonsterController from "../controllers/monster.controller";
+import * as SkillsController from "../controllers/skill.controller";
+
 const express 			= require('express');
 const router 			= express.Router();
 
@@ -12,11 +15,21 @@ const path              = require('path');
 
 require('./../middleware/passport')(passport);
 
-/* COMBAT 1V1 */
+/* COMBAT PVP */
 router.post(    '/combat',          passport.authenticate('jwt', {session:false}), CharactersController.fight);
+
+/* COMBAT PVE */
+router.post(    '/pve',             passport.authenticate('jwt', {session:false}),  CharactersController.pve);
+
+/* MONSTERS */
+router.get(     '/monsters',        passport.authenticate('jwt', {session:false}),  MonsterController.get);
 
 /* CHARACTERS */
 router.get(     '/characters',      passport.authenticate('jwt', {session:false}), CharactersController.get);   // C
+
+/* SKILLS */
+router.get(     '/skills',          passport.authenticate('jwt', {session: false}), SkillsController.get);
+router.post(     '/character/skills',          passport.authenticate('jwt', {session: false}), SkillsController.add);
 
 /* CHARACTER */
 router.post(    '/character',       passport.authenticate('jwt', {session:false}), CharacterController.create); // C

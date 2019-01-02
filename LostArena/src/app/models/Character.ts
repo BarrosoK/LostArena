@@ -106,7 +106,7 @@ export class CharacterChat {
       wordWrapWidth: 700
     });
     this.pApp.stage.addChild(this.nameText);
-    this.chatText =  new PIXI.Text('', {
+    this.chatText = new PIXI.Text('', {
       fill: '#555555',
       font: '48px Arial',
       wordWrap: true,
@@ -165,7 +165,7 @@ export class CharacterChat {
 
   setMovingDirection(state: CharacterMoveDirection) {
 
-    if (state === CharacterMoveDirection.RIGHT || state === CharacterMoveDirection.LEFT) {
+    if (state === CharacterMoveDirection.RIGHT || state === CharacterMoveDirection.LEFT) {
       this.isMoving = true;
     } else {
       this.isMoving = false;
@@ -195,7 +195,7 @@ export class CharacterChat {
   updateUi(delta) {
     this.nameText.text = this.name;
     this.nameText.x = this.spine.x - (this.nameText.width / 2);
-    this.nameText.y = this.spine.y - this.spine.height -  50;
+    this.nameText.y = this.spine.y - this.spine.height - 50;
     if (this.chatText.text.length > 0) {
       this.chatText.x = this.spine.x - (this.chatText.width / 2);
       this.chatText.y = this.spine.y - this.spine.height - 100;
@@ -228,7 +228,7 @@ export class CharacterChat {
         this.setMovingDirection(CharacterMoveDirection.IDLE);
         return;
       }
-        this.spine.y += SPEED * delta;
+      this.spine.y += SPEED * delta;
     } else if (this.isJumping) {
       this.spine.y -= SPEED / 1.5 * delta;
     }
@@ -266,7 +266,7 @@ export class CharacterChat {
   }
 
   jump() {
-    if (this.isJumping || this.isFalling) {
+    if (this.isJumping || this.isFalling) {
       return;
     }
     this.isJumping = true;
@@ -277,6 +277,7 @@ export class CharacterChat {
   flipX(value: boolean) {
     this.spine.skeleton.flipX = value;
   }
+
   getCurrentAnimationName(index = 0) {
     return this.spine.state.getCurrent(index).animation.name;
   }
@@ -430,6 +431,38 @@ export class Character implements ICharacter {
     return this.equipped['weapon'];
   }
 
+  getEquipment(part: string) {
+    if (!this.equipped) {
+      return null;
+    }
+    return this.equipped[part];
+  }
+
+  getAttackPower() {
+    return Math.round(Math.pow(this.getStr(), (1.1)));
+  }
+
+  getAtkSpeed() {
+    return (200 / (200 + this.getDex()) * 20);
+  }
+
+  getDefense() {
+    let value = Math.round(Math.pow(this.getCon(), (1.4)));
+    if (this.equipped) {
+      EquipmentParts.forEach((p) => {
+        const part = this.equipped[p];
+        if (part && part.bonus) {
+          part.bonus.forEach((b: IBonus) => {
+            if (b.stat === 'PDEF') {
+              value += b.value;
+            }
+          });
+        }
+      });
+    }
+    return value;
+  }
+
   getStr() {
     let value = this.str;
     if (this.equipped) {
@@ -438,6 +471,23 @@ export class Character implements ICharacter {
         if (part && part.bonus) {
           part.bonus.forEach((b: IBonus) => {
             if (b.stat === 'STR') {
+              value += b.value;
+            }
+          });
+        }
+      });
+    }
+    return value;
+  }
+
+  getDex() {
+    let value = this.str;
+    if (this.equipped) {
+      EquipmentParts.forEach((p) => {
+        const part = this.equipped[p];
+        if (part && part.bonus) {
+          part.bonus.forEach((b: IBonus) => {
+            if (b.stat === 'DEX') {
               value += b.value;
             }
           });
@@ -488,6 +538,7 @@ export class Character implements ICharacter {
     this.str = c.str;
     this.sta = c.sta;
     this.con = c.con;
+    this.dex = c.dex;
     this.user_id = c.user_id;
     this.level = c.level;
     this.exp = c.exp;
@@ -688,7 +739,7 @@ export class Character implements ICharacter {
     const isMiss = this.queue[0]['attack']['isMiss'];
 
 
-    const wait = this.spine.state.setAnimation(0, 'attack_0' +  + (isCrit ? 3 : (Math.floor(Math.random() * (2) + 1))), false).animationEnd * 1000;
+    const wait = this.spine.state.setAnimation(0, 'attack_0' + +(isCrit ? 3 : (Math.floor(Math.random() * (2) + 1))), false).animationEnd * 1000;
     const style = {
       'fontSize': 35,
       'dropShadow': true,
@@ -719,7 +770,7 @@ export class Character implements ICharacter {
       } else {
         if (isCrit) {
           style.fontSize = 45;
-          style.fill =  [
+          style.fill = [
             '#ffcb0e',
             '#deb10d',
             '#ad9025'
@@ -774,8 +825,8 @@ export class Character implements ICharacter {
     this.spine.state.setAnimation(0, 'dying', false);
   }
 
-  handleUi(delta) {
-    let p = (this.currentHealth / this.maximumHealth  * PROGRESSBAR_HEALTH_WIDTH) - PROGRESSBAR_BORDER;
+  handleUi(delta) {
+    let p = (this.currentHealth / this.maximumHealth * PROGRESSBAR_HEALTH_WIDTH) - PROGRESSBAR_BORDER;
     if (p < 0) {
       p = 0;
     }
@@ -784,7 +835,7 @@ export class Character implements ICharacter {
     this.healthPbPercent.x = (PROGRESSBAR_HEALTH_WIDTH / 2) - (this.healthPbPercent.width / 2);
     this.uiText.forEach((text) => {
       text.y -= 3 * delta;
-      const s = ( (text.direction === 1 ? 1 : -1) * 25) * Math.sin(text.y / 60) + text.default;
+      const s = ((text.direction === 1 ? 1 : -1) * 25) * Math.sin(text.y / 60) + text.default;
       text.x = s;
       if (text.y <= 0) {
         this.pApp.stage.removeChild(text);

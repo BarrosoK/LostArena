@@ -61,7 +61,7 @@ const remove = async function(req, res){
     if(err) return ReE(res, 'error occured trying to delete user');
 
     return ReS(res, {message:'Deleted User'}, 204);
-}
+};
 module.exports.remove = remove;
 
 

@@ -1,18 +1,41 @@
-<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-evenly center" class="bg-dark">
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" class="bg-dark p-2">
 
-  <div class="bg-light">
-    <virtual-scroller #scroll [items]="5" style="height: 300px; width: 400px" *ngIf="!duel || duel?.isOver">
-      <div *ngFor="let character of characters | async">
-        <div *ngIf="(selectedCharacter$ | async)?._id !== character?._id">
-          {{character.name}} <button (click)="startFight(character._id)">Fight</button>
-        </div>
-      </div>
-    </virtual-scroller>
-  </div>
-
-  <div  (window:resize)="adjustCanvasSize()"  #pixiContainer></div>
-
-  <div>
-  </div>
+  <div (window:resize)="adjustCanvasSize()" #pixiContainer></div>
 
 </div>
+<div fxLayout.gt-md="row" fxLayoutAlign.gt-md="space-evenly center">
+  <virtual-scroller #scroll [items]="5" style="height: 300px; width: 500px"
+                    *ngIf="!duel || duel?.isOver; else fighting">
+    <mat-list>
+      <mat-list-item *ngFor="let character of characters | async" class="mt-2 mat-elevation-z2">
+        <div *ngIf="(selectedCharacter$ | async)?._id !== character?._id" fxFlexFill fxLayoutAlign="space-between center">
+          <div>
+            {{character.name | slice:0:22}}
+          </div>
+          <mat-action-list class="p-2" fxLayout="row">
+            <button mat-list-item  class="bg-primary" (click)="startFight(character._id)">Fight</button>
+          </mat-action-list>
+        </div>
+
+      </mat-list-item>
+    </mat-list>
+  </virtual-scroller>
+  <virtual-scroller [items]="5" style="height: 300px; width: 500px">
+    <mat-list>
+      <mat-list-item *ngFor="let turn of duel?.rt.reverse();let i = index" class="mt-2 mat-elevation-z2">
+        <div fxFlexFill fxLayoutAlign="space-between center">
+          {{turn.turn}} {{turn.attacker.name}} -> {{turn.attack.damages}} {{turn.attack.target.name}}
+          <ng-container *ngIf="turn.attack.isSkill">{{turn.attack.skill.name}}</ng-container>
+          <mat-action-list class="p-2" fxLayout="row">
+            <button mat-list-item  class="bg-warning">Infos</button>
+          </mat-action-list>
+        </div>
+
+      </mat-list-item>
+    </mat-list>
+  </virtual-scroller>
+  <app-profile></app-profile>
+</div>
+<ng-template #fighting>
+  Fighting...
+</ng-template>
