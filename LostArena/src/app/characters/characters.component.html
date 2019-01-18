@@ -5,8 +5,8 @@
     <span class="mat-h4">Selected character: </span><span class="mat-body-strong">{{ character.name }}</span>
     <div *ngFor="let e of character.equipped  | keyvalue" >
        <div fxLayout="column" fxLayoutAlign="center center">
-         {{e.value.name}} [{{e.key}}]
-          <div *ngFor="let bonus of e.value.bonus  | keyvalue">
+         {{e.value?.name}} [{{e.key}}]
+          <div *ngFor="let bonus of e.value?.bonus  | keyvalue">
             {{bonus.key}}: {{bonus.value}}
           </div>
        </div>

@@ -132,19 +132,18 @@ export class FightComponent implements OnInit {
     this.extendProfile = !this.extendProfile;
   }
 
-  async startFight(enemyId) {
+  async startFight(enemy) {
     const character = await this.store.selectOnce(UserState.selectedCharacter).toPromise();
-    if (character._id === enemyId) {
+    if (character._id === enemy._id) {
       return;
     }
-    const duel: DuelLog = await this.characterService.startFight(character._id, enemyId).toPromise();
+    this.selectedCharacter = enemy;
+    const duel: DuelLog = await this.characterService.startFight(character._id, enemy._id).toPromise();
     if (this.duel) {
       this.duel.delete();
     }
-    console.log(character.level, character, duel);
     this.duel = new Duel(this.pApp, duel, this.store);
     this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
-      console.log('3');
       this.store.dispatch(new SetCharacters(characters));
     });
   }

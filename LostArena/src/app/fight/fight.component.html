@@ -11,7 +11,7 @@
       Fighters
     </div>
     <mat-accordion class="example-headers-align">
-      <mat-expansion-panel *ngFor="let character of characters | async" hideToggle>
+      <mat-expansion-panel *ngFor="let character of characters | async" hideToggle class="m-2">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{character.name | slice:0:22}}
@@ -21,14 +21,14 @@
               level {{character.level}}
             </div>
             <button mat-button color="primary" *ngIf="(selectedCharacter$ | async)?._id !== character?._id"
-                    (click)="startFight(character._id)">Fight
+                    (click)="startFight(character)">Fight
             </button>
           </mat-panel-description>
         </mat-expansion-panel-header>
         <app-profile [character]="character" [extended]="true" [items]="true"></app-profile>
         <mat-action-row>
           <button mat-button color="primary" *ngIf="(selectedCharacter$ | async)?._id !== character?._id"
-                  (click)="startFight(character._id)">Fight
+                  (click)="startFight(character)">Fight
           </button>
         </mat-action-row>
       </mat-expansion-panel>
@@ -49,7 +49,8 @@
           </mat-panel-title>
           <mat-panel-description fxLayout="row" fxLayoutAlign="space-between center">
             <div>
-              {{turn.attacker.name}} {{turn.attack.isSkill ? "[" + turn.attack.skill['name'] + "]" : ""}} -> {{turn.attack.damages}} {{turn.attack.target.name}}
+              {{turn.attacker.name}} {{turn.attack.isSkill ? "[" + turn.attack.skill['name'] + "]" : ""}}
+              -> {{turn.attack.damages}} {{turn.attack.target.name}}
             </div>
           </mat-panel-description>
         </mat-expansion-panel-header>
@@ -64,7 +65,8 @@
     </mat-accordion>
   </virtual-scroller>
   <div fxLayout="column">
-    <div class="bg-light" fxLayout="row" style="background-color: #0d0d0d; width: 100%" fxLayoutAlign="space-between center">
+    <div class="bg-light" fxLayout="row" style="background-color: #0d0d0d; width: 100%"
+         fxLayoutAlign="space-between center">
       <div>
         Profile
       </div>
@@ -83,7 +85,12 @@
   </div>
 </div>
 <ng-template #fighting>
-  <div>
-    Fighting...
+  <div fxLayout="column" fxLayoutAlign="center center">
+
+    <div>
+      Fighting {{selectedCharacter.name}}...
+    </div>
+      <app-profile [extended]="true" [character]="selectedCharacter"></app-profile>
   </div>
+
 </ng-template>
