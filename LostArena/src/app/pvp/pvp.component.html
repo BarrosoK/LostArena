@@ -1,0 +1,3 @@
+<div fxLayout="row" class="m-2">
+    <app-profile *ngFor="let u of lobby | keyvalue" [character]="u.value" [extended]="true"></app-profile>
+</div>

@@ -1,0 +1,63 @@
+<mat-card *ngIf="character$ | async as character" fxLayout="column">
+  <div fxLayout="column" fxLayoutAlign="center center">
+    <mat-card-title class="border-bottom">
+      {{character.name}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      Level {{character.level}}
+    </mat-card-subtitle>
+  </div>
+  <mat-card-content>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <div>
+        <img src="assets/icons/heart.png" alt="image">
+        STA: {{character.sta}}
+      </div>
+      <div>
+        <img src="assets/icons/boots.png" alt="image">
+        DEX: {{character.dex}}
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <div>
+        <img src="assets/icons/woodSword.png" alt="image">
+        STR: {{character.str}}
+      </div>
+      <div>
+        <img src="assets/icons/shield_wood.png" alt="image">
+        CON: {{character.con}}
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="extended">
+      <div>
+        <img src="assets/icons/shield_wood.png" alt="image">
+        ATK: {{character?.getAttackPower()}}
+      </div>
+      <div>
+        <img src="assets/icons/woodSword.png" alt="image">
+        PDEF: {{character.getDefense()}}
+      </div>
+      <div>
+        <img src="assets/icons/woodSword.png" alt="image">
+        SPD: {{character.getAtkSpeed() | number:'0.0-0'}}
+      </div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-bar" role="progressbar"
+           [ngStyle]="{'width': ( character.exp / (character.level * character.level * character.level)) * 100 +'%'}"
+           aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+      <div style="position: absolute;width: 100%; text-align: center">
+        {{(character.exp / (character.level * character.level * character.level) * 100 | number:'0.0-0')}}%
+      </div>
+    </div>
+  </mat-card-content>
+  <div *ngIf="items">
+    <div *ngFor="let e of character.equipped  | keyvalue" fxLayout="column" fxLayoutAlign="center center">
+      <div>
+        <span class="mat-title">{{e.key}}</span> : <span class="mat-h3">{{e.value?.name}}</span>
+      </div>
+    </div>
+  </div>
+
+</mat-card>

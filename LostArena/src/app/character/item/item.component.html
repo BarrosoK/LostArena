@@ -1,0 +1,31 @@
+<mat-card
+  class="example-box"
+  *ngIf="item">
+  <div class="view rgba-white-slight waves-light" mdbWavesEffect>
+    <img style="width: 200px; height: 200px" [src]="'src/assets/icons/' + item.icon" [alt]="item.name">
+    <a>
+      <div class="mask"></div>
+    </a>
+  </div>
+  <mdb-card-body>
+    <mdb-card-title>
+      <h4>{{ item.name }}</h4>
+    </mdb-card-title>
+    <ng-container *ngIf="item.bonus">
+      <div *ngFor="let bonus of item.bonus">
+        {{bonus.stat}} {{bonus.value | number:'0.0-0'}}
+      </div>
+    </ng-container>
+  </mdb-card-body>
+  <mdb-card-footer *ngIf="actions">
+    <ng-container
+      *ngIf="(characterService.selectedCharacter$ | async)?.getEquipment(item.part)?._id === item._id;then equipped else notEquipped "></ng-container>
+    <ng-template #notEquipped>
+      <button mdbBtn color="primary" (click)="equip(item._id)" mdbWavesEffect>Equip</button>
+    </ng-template>
+    <ng-template #equipped>
+      <button mdbBtn color="danger" (click)="equip(undefined)" mdbWavesEffect>Unequip</button>
+    </ng-template>
+    <button mdbBtn color="danger" (click)="throwItem(item._id)" mdbWavesEffect>Delete</button>
+  </mdb-card-footer>
+</mat-card>

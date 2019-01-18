@@ -1,0 +1,42 @@
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" class="bg-dark p-2">
+
+
+  <div (window:resize)="adjustCanvasSize()" #pixiContainer></div>
+
+</div>
+<div fxLayout.lt-md="column" fxLayout.gt-md="row" fxLayoutAlign.gt-md="space-evenly center">
+  <virtual-scroller #scroll [items]="5" style="height: 300px; width: 500px"
+                    *ngIf="!duel || duel?.isOver; else fighting">
+    <mat-list>
+      <mat-list-item *ngFor="let monster of monsters | async" class="mt-2 mat-elevation-z2">
+        <div fxFlexFill fxLayoutAlign="space-between center">
+          <div>
+            {{monster.name | slice:0:22}}
+          </div>
+          <mat-action-list class="p-2" fxLayout="row">
+            <button mat-list-item  class="bg-primary" (click)="startFight(monster.id - 1)">Fight</button>
+          </mat-action-list>
+        </div>
+
+      </mat-list-item>
+    </mat-list>
+  </virtual-scroller>
+  <virtual-scroller [items]="5" style="height: 300px; width: 500px">
+    <mat-list>
+      <mat-list-item *ngFor="let turn of duel?.rt.reverse();let i = index" class="mt-2 mat-elevation-z2">
+        <div fxFlexFill fxLayoutAlign="space-between center">
+          {{turn.turn}} {{turn.attacker.name}} -> {{turn.attack.damages}} {{turn.attack.target.name}}
+          <mat-action-list class="p-2" fxLayout="row">
+            <button mat-list-item  class="bg-warning">Infos</button>
+          </mat-action-list>
+        </div>
+
+      </mat-list-item>
+    </mat-list>
+  </virtual-scroller>
+  <app-profile></app-profile>
+</div>
+
+<ng-template #fighting>
+  Fighting...
+</ng-template>
