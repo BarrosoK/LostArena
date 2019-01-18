@@ -18,6 +18,7 @@ import {FightComponent} from "./fight/fight.component";
 import {ItemDialogComponent} from "./shop/item-dialog/item-dialog.component";
 import {PveComponent} from "./pve/pve.component";
 import {ItemComponent} from "./character/item/item.component";
+import {PvpComponent} from "./pvp/pvp.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -33,6 +34,7 @@ const routes: Routes = [
   {path: 'combat', component: CombatComponent, canActivate: [AuthGuard]},
   {path: 'fight', component: FightComponent, canActivate: [AuthGuard]},
   {path:  'pve', component: PveComponent, canActivate: [AuthGuard]},
+  {path:  'pvp', component: PvpComponent, canActivate: [AuthGuard]},
 
   {path: 'login', component: LoginComponent, canActivate: [DcFirstGuard]},
   {path: 'register', component: RegisterComponent, canActivate: [DcFirstGuard]},

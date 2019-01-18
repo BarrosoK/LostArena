@@ -13,6 +13,7 @@ var socketmiddleware = function (socket, next) {
 };
 
 export const chatroom = new Map();
+export const pvpLobby = new Map();
 
 module.exports = {
 
@@ -42,6 +43,7 @@ module.exports = {
                 chatroom.delete(user_id);
                 module.exports.onDisconnect()
             });
+            socket.on('pvp join', (character) => module.exports.onPvpJoin(socket, character));
             socket.on('chatroom move', (position) => module.exports.onChatRoomMove(socket, position));
             socket.on('chatroom leave', () => module.exports.onChatRoomLeave(socket));
             socket.on('chatroom join', (character) => module.exports.onChatRoomJoin(socket, character));
@@ -58,6 +60,25 @@ module.exports = {
         });
 
 
+    },
+    onPvpJoin: (socket, character) => {
+        if (!socket.handshake.session.user) {
+            return;
+        }
+        if (pvpLobby.has(socket.handshake.session.user._id) && pvpLobby.get(socket.handshake.session.user._id) !== character) {
+            socket.broadcast.emit('pvp join', [socket.handshake.session.user._id, character]);
+            pvpLobby.set(socket.handshake.session.user._id, character);
+            socket.emit('pvp list', pvpLobby);
+            console.log('1');
+        } else if (pvpLobby.has(socket.handshake.session.user._id)) {
+            socket.emit('pvp list', pvpLobby);
+            console.log('2');
+        } else {
+            console.log('3');
+            socket.broadcast.emit('pvp join', [socket.handshake.session.user._id, character]);
+            pvpLobby.set(socket.handshake.session.user._id, character);
+            socket.emit('pvp list', pvpLobby);
+        }
     },
     onChatRoomChat: (io, socket, {type, text}) => {
         if (!socket.handshake.session.user) {

@@ -1,8 +1,8 @@
-<mat-grid-list [cols]="2"  rowHeight="1:3" gutterSize="1rem">
-  <mat-grid-tile *ngFor="let item of (items | async); index as i">
 
     <!-- Card -->
-    <mdb-card>
+    <div fxLayout="row" fxLayoutGap="2%" class="m-2">
+
+    <mdb-card *ngFor="let item of (items | async); index as i">
       <div class="view rgba-white-slight waves-light" mdbWavesEffect>
         <img [src]="'src/assets/icons/' + item.icon" class="img-fluid" alt="Responsive image" class="img-thumbnail"
              style="width: 300px; height: 200px">
@@ -29,5 +29,4 @@
       </mdb-card-footer>
     </mdb-card>
     <!-- Card -->
-  </mat-grid-tile>
-</mat-grid-list>
+    </div>

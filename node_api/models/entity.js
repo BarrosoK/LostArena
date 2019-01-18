@@ -1,7 +1,7 @@
 import {JsonSkills, rawSkills} from "../controllers/skill.controller";
 
 const {Character} = require('../models');
-const { to, ReE, ReS } = require('../services/util.service');
+const {to, ReE, ReS} = require('../services/util.service');
 
 var socketio = require('../socket/socket');
 import {equippmentParts} from './item.enum';
@@ -13,7 +13,7 @@ export class Skill {
         this.type = s.type;
         this.effect = s.effect;
         this.effect.forEach(effect => {
-            for(let e in effect) {
+            for (let e in effect) {
                 console.log(e, Array.isArray(effect[e]));
                 if (Array.isArray(effect[e])) {
                     effect[e] = effect[e][level - 1];
@@ -72,9 +72,11 @@ export class Entity {
         this.currentHealth = this.maxHealth;
         this.exp = character.exp;
         this.skills = [];
-        character.skills.forEach(skill => {
-            this.skills.push(new Skill(skill.skill_id, skill.level));
-        });
+        if (character.skills) {
+            character.skills.forEach(skill => {
+                this.skills.push(new Skill(skill.skill_id, skill.level));
+            });
+        }
     }
 
     getStr() {
@@ -92,12 +94,12 @@ export class Entity {
             });
         }
         return value;
-      }
+    }
 
-      getMaxHealth() {
+    getMaxHealth() {
         const max = Math.round(Math.pow(this.getCon(), (1.2)) + Math.pow(this.getSta(), (1.6)) + 60 + (5 * this.level));
         return max;
-      }
+    }
 
     getCon() {
         let value = this.con;
@@ -116,22 +118,22 @@ export class Entity {
         return value;
     }
 
-      getSta() {
+    getSta() {
         let value = this.sta;
-          if (this.equipped) {
-              equippmentParts.forEach((p) => {
-                  const part = this.equipped[p];
-                  if (part && part.bonus) {
-                      part.bonus.forEach((b) => {
-                          if (b.stat === 'STA') {
-                              value += b.value;
-                          }
-                      });
-                  }
-              });
-          }
-          return value;
-      }
+        if (this.equipped) {
+            equippmentParts.forEach((p) => {
+                const part = this.equipped[p];
+                if (part && part.bonus) {
+                    part.bonus.forEach((b) => {
+                        if (b.stat === 'STA') {
+                            value += b.value;
+                        }
+                    });
+                }
+            });
+        }
+        return value;
+    }
 
     getDex() {
         let value = this.dex;
@@ -150,10 +152,10 @@ export class Entity {
         return value;
     }
 
-    randomFloat(min, max, decimalPlaces){
-        var rand = Math.random()*(max-min) + min;
+    randomFloat(min, max, decimalPlaces) {
+        var rand = Math.random() * (max - min) + min;
         var power = Math.pow(10, decimalPlaces);
-        return Math.floor(rand*power) / power;
+        return Math.floor(rand * power) / power;
     }
 
     isDead() {
@@ -256,7 +258,7 @@ export class Entity {
     }
 
     getAtkspeed() {
-        return (200/(200+this.getDex())*20)
+        return (200 / (200 + this.getDex()) * 20)
     }
 
     async fight(target) {
@@ -312,7 +314,7 @@ export class Entity {
             // WTF ??
             console.log('IT HAPPENED');
         }
-        return {result, turns:logs};
+        return {result, turns: logs};
     }
 
     getExpDie() {
@@ -361,6 +363,7 @@ export class Player extends Entity {
     getId() {
         return this.character._id;
     }
+
     getName() {
         return this.character.name;
     }
@@ -371,9 +374,11 @@ export class Monster extends Entity {
         super(entity);
         this.loot = entity.loot;
     }
+
     getId() {
         return this.id;
     }
+
     getName() {
         return this.name;
     }

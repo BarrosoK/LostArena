@@ -21,7 +21,7 @@ export class CharacterService {
   constructor(private httpClient: HttpClient, private store: Store) {
     this.store.select(UserState.token).subscribe(token => {
       if (token) {
-        this.getMyCharacters().subscribe((characters) => this.store.dispatch(new SetCharacters(characters)));
+        // this.getMyCharacters().subscribe((characters) => this.store.dispatch(new SetCharacters(characters)));
       }
     });
     this.characters$ = this.store.select(UserState.characters);

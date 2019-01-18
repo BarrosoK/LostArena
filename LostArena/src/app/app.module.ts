@@ -13,7 +13,13 @@ import {
   MatIconModule,
   MatListModule,
   MatGridListModule,
-  MatProgressSpinnerModule, MatInputModule, MatSelectModule, MatRadioModule, MatCardModule, MatSnackBarModule
+  MatProgressSpinnerModule,
+  MatInputModule,
+  MatSelectModule,
+  MatRadioModule,
+  MatCardModule,
+  MatSnackBarModule,
+  MatMenuModule
 } from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {NavbarComponent} from './navbar/navbar.component';
@@ -31,6 +37,7 @@ import {UserState, UserStateModel} from './stores/states/user.state';
 import {NgxsLoggerPluginModule} from '@ngxs/logger-plugin';
 import {NgxsReduxDevtoolsPluginModule} from '@ngxs/devtools-plugin';
 import {JWTInterceptor} from '../interceptors/jwtInterceptor';
+import { DragulaModule } from 'ng2-dragula';
 
 import {MatBadgeModule} from '@angular/material/badge';
 import {DragDropModule} from '@angular/cdk/drag-drop';
@@ -60,6 +67,8 @@ import {SocketService} from '../services/socket.service';
 import {AddMessageCombat, AddMessageSystem} from './stores/actions/socket.actions';
 import { ProfileComponent } from './character/profile/profile.component';
 import { ItemComponent } from './character/item/item.component';
+import {ScrollDispatchModule} from "@angular/cdk/scrolling";
+import { PvpComponent } from './pvp/pvp.component';
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -88,6 +97,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     PveComponent,
     ProfileComponent,
     ItemComponent,
+    PvpComponent,
   ],
   imports: [
     BrowserModule,
@@ -111,9 +121,11 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     MatRadioModule,
     MatCardModule,
     ReactiveFormsModule,
+    MatMenuModule,
     FormsModule,
     HttpClientModule,
     MatExpansionModule,
+    ScrollDispatchModule,
     NgxsModule.forRoot([
       UserState,
       SocketState
@@ -124,6 +136,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3002', options: {} };
     VirtualScrollerModule,
     SocketIoModule.forRoot(config),
     HttpClientModule,
+    DragulaModule.forRoot(),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

@@ -5,7 +5,7 @@ import {Store} from '@ngxs/store';
 import {AddMessageSystem} from '../app/stores/actions/socket.actions';
 import {merge, Observable} from 'rxjs';
 import {SocketState} from '../app/stores/states/socket.state';
-import {CharacterChat} from '../app/models/Character';
+import {Character, CharacterChat, ICharacter} from '../app/models/Character';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,6 @@ export class SocketService {
   }
 
   login(user) {
-    console.log('oui');
     this.socket.emit('login', user);
   }
 
@@ -63,6 +62,18 @@ export class SocketService {
         name: character.name,
         position: character.position
     });
+  }
+
+  joinPvp(characterId: Character) {
+    this.socket.emit('pvp join', characterId);
+  }
+
+  onJoinPvp() {
+    return this.socket.fromEvent('pvp join');
+  }
+
+  onJoinList() {
+    return this.socket.fromEvent('pvp list');
   }
 
   removeChatRoom(characterId: number) {

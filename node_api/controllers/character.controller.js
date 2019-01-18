@@ -122,14 +122,13 @@ module.exports.addItem = addItem;
 const equipItem = async function(req, res){
     const body = req.body;
     const charId = body.characterId;
-    const itemId = body.itemId;
+    let itemId = body.itemId;
 
     let err, result, item;
 
     if (!isMyChar(req, charId)) {
         return ReE(res, {message: 'Not authorized'});
     }
-
 
     [err, item] = await to(Item.findOne({_id: itemId}));
     if (err) {

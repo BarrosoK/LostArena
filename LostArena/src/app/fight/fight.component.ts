@@ -9,6 +9,7 @@ import {UserState} from '../stores/states/user.state';
 import {Duel, DuelLog} from '../../classes/duel';
 import {SetCharacters} from "../stores/actions/character.actions";
 import {first} from "rxjs/operators";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 declare var PIXI: any;
 
 
@@ -25,6 +26,21 @@ export class FightComponent implements OnInit {
   duel: Duel;
   @Select(UserState.selectedCharacter) selectedCharacter$: Observable<ICharacter>;
   characters: Observable<ICharacter[]>;
+  last;
+  step = 0;
+  extendProfile = false;
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep(step) {
+    this.step = step;
+  }
+
+  prevStep() {
+    this.step--;
+  }
 
   constructor(private store: Store, private characterService: CharacterService, private socket: SocketService) {
     this.selectedCharacter = this.store.selectSnapshot(UserState.selectedCharacter);
@@ -112,8 +128,15 @@ export class FightComponent implements OnInit {
     this.pApp.stage.scale.set(scaleFactor);
   }
 
+  extend() {
+    this.extendProfile = !this.extendProfile;
+  }
+
   async startFight(enemyId) {
     const character = await this.store.selectOnce(UserState.selectedCharacter).toPromise();
+    if (character._id === enemyId) {
+      return;
+    }
     const duel: DuelLog = await this.characterService.startFight(character._id, enemyId).toPromise();
     if (this.duel) {
       this.duel.delete();
@@ -121,7 +144,17 @@ export class FightComponent implements OnInit {
     console.log(character.level, character, duel);
     this.duel = new Duel(this.pApp, duel, this.store);
     this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
+      console.log('3');
       this.store.dispatch(new SetCharacters(characters));
     });
+  }
+
+  drop(event: CdkDragDrop<any>) {
+    const t = [];
+    moveItemInArray(t, event.previousIndex, event.currentIndex);
+  }
+
+  noReturnPredicate() {
+    return true;
   }
 }

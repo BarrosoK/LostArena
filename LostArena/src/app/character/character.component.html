@@ -38,28 +38,28 @@
 
 <div fxLayout="row" fxLayoutAlign="space-evenly center">
   <div>
-    <h2>Weapon</h2>
     <div
       id="weapon"
-      fxLayout="row"
+      fxLayout="column"
       cdkDropList
       class="bg-light"
       cdkDropListOrientation="horizontal"
       (cdkDropListDropped)="equipDrag($event)"
       [cdkDropListEnterPredicate]="weaponPredicate">
+      <h2>Weapon</h2>
       <app-item [item]="weapon"></app-item>
     </div>
   </div>
   <div>
-    <h2>Chest</h2>
     <div
       id="chest"
-      fxLayout="row"
+      fxLayout="column"
       cdkDropList
       class="bg-light"
       cdkDropListOrientation="horizontal"
       (cdkDropListDropped)="equipDrag($event)"
       [cdkDropListEnterPredicate]="isChest">
+      <h2>Chest</h2>
       <app-item [item]="chest"></app-item>
     </div>
   </div>
@@ -67,7 +67,7 @@
     <h2>Helmet</h2>
     <div
       id="helmet"
-      fxLayout="row"
+      fxLayout="column"
       cdkDropList
       cdkDropListOrientation="horizontal"
       class="bg-light"

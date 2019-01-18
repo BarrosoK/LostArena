@@ -12,6 +12,7 @@ import {CharacterService} from "./character.service";
 import {Character} from "../app/models/Character";
 import {SelectCharacter, SetCharacters} from "../app/stores/actions/character.actions";
 import {SocketService} from "./socket.service";
+import {first} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -96,7 +97,7 @@ export class AuthService {
       http.get(environment.api.profile).subscribe((res) => {
         this.store.dispatch(new SetUser(res['user']));
         this.socket.login(res['user']);
-        this.characterService.getMyCharacters().subscribe((characters: Character[]) => {
+        this.characterService.getMyCharacters().pipe(first()).subscribe((characters: Character[]) => {
           this.store.dispatch(new SetCharacters(characters));
           this.recoverSelected();
         });

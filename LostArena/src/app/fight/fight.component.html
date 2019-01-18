@@ -1,41 +1,89 @@
-<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" class="bg-dark p-2">
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="center center" class="bg-dark p-2" dragula="DRAGULA_FACTS">
 
-  <div (window:resize)="adjustCanvasSize()" #pixiContainer></div>
+  <div (window:resize)="adjustCanvasSize()" #pixiContainer class="m-2"></div>
 
 </div>
-<div fxLayout.gt-md="row" fxLayoutAlign.gt-md="space-evenly center">
-  <virtual-scroller #scroll [items]="5" style="height: 300px; width: 500px"
+<div fxLayout.gt-md="row" fxLayoutAlign.gt-md="space-evenly center" dragula="DRAGULA_FACTS">
+
+  <virtual-scroller #scroll [items]="5" style="height: 300px; width: 500px;"
                     *ngIf="!duel || duel?.isOver; else fighting">
-    <mat-list>
-      <mat-list-item *ngFor="let character of characters | async" class="mt-2 mat-elevation-z2">
-        <div *ngIf="(selectedCharacter$ | async)?._id !== character?._id" fxFlexFill fxLayoutAlign="space-between center">
-          <div>
+    <div class="bg-light">
+      Fighters
+    </div>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel *ngFor="let character of characters | async" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
             {{character.name | slice:0:22}}
-          </div>
-          <mat-action-list class="p-2" fxLayout="row">
-            <button mat-list-item  class="bg-primary" (click)="startFight(character._id)">Fight</button>
-          </mat-action-list>
-        </div>
-
-      </mat-list-item>
-    </mat-list>
+          </mat-panel-title>
+          <mat-panel-description fxLayout="row" fxLayoutAlign="space-between center">
+            <div>
+              level {{character.level}}
+            </div>
+            <button mat-button color="primary" *ngIf="(selectedCharacter$ | async)?._id !== character?._id"
+                    (click)="startFight(character._id)">Fight
+            </button>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <app-profile [character]="character" [extended]="true" [items]="true"></app-profile>
+        <mat-action-row>
+          <button mat-button color="primary" *ngIf="(selectedCharacter$ | async)?._id !== character?._id"
+                  (click)="startFight(character._id)">Fight
+          </button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
   </virtual-scroller>
+
+
   <virtual-scroller [items]="5" style="height: 300px; width: 500px">
-    <mat-list>
-      <mat-list-item *ngFor="let turn of duel?.rt.reverse();let i = index" class="mt-2 mat-elevation-z2">
-        <div fxFlexFill fxLayoutAlign="space-between center">
-          {{turn.turn}} {{turn.attacker.name}} -> {{turn.attack.damages}} {{turn.attack.target.name}}
-          <ng-container *ngIf="turn.attack.isSkill">{{turn.attack.skill.name}}</ng-container>
-          <mat-action-list class="p-2" fxLayout="row">
-            <button mat-list-item  class="bg-warning">Infos</button>
-          </mat-action-list>
-        </div>
-
-      </mat-list-item>
-    </mat-list>
+    <div class="bg-light">
+      Logs
+    </div>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel *ngFor="let turn of duel?.rt.reverse();let i = index"
+                           [expanded]="step === turn.turn" (opened)="setStep(turn.turn)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{turn.turn}} 
+          </mat-panel-title>
+          <mat-panel-description fxLayout="row" fxLayoutAlign="space-between center">
+            <div>
+              {{turn.attacker.name}} {{turn.attack.isSkill ? "[" + turn.attack.skill['name'] + "]" : ""}} -> {{turn.attack.damages}} {{turn.attack.target.name}}
+            </div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-action-row>
+          {{turn.attack | json}}
+        </mat-action-row>
+        <mat-action-row>
+          <button mat-button color="warn" (click)="nextStep(turn.turn - 1)">Previous</button>
+          <button mat-button color="primary" (click)="nextStep(turn.turn + 1)">Next</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
   </virtual-scroller>
-  <app-profile></app-profile>
+  <div fxLayout="column">
+    <div class="bg-light" fxLayout="row" style="background-color: #0d0d0d; width: 100%" fxLayoutAlign="space-between center">
+      <div>
+        Profile
+      </div>
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button (click)="extend()" mat-menu-item>
+          <mat-icon>dialpad</mat-icon>
+          <span>Extend profil</span>
+        </button>
+      </mat-menu>
+
+    </div>
+    <app-profile [extended]="extendProfile"></app-profile>
+  </div>
 </div>
 <ng-template #fighting>
-  Fighting...
+  <div>
+    Fighting...
+  </div>
 </ng-template>
